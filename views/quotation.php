@@ -21,15 +21,49 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit']) &&
         'shipmentType' => 'Shipment type', 'pickupType' => 'Pickup vehicle', 'content' => 'Parcel contents'
     ];
     $values = [];
+    $maxLengths = [
+        'firstname' => 100, 'lastname' => 100, 'email' => 254, 'contactnumber' => 60,
+        'paddress' => 500, 'daddress' => 500, 'pdate' => 10, 'ptime' => 5, 'ddate' => 10,
+        'pcity' => 120, 'pstate' => 120, 'pcountry' => 120, 'dcity' => 120,
+        'dstate' => 120, 'dcountry' => 120, 'receivername' => 200,
+        'shipmentType' => 40, 'pickupType' => 40, 'content' => 2000
+    ];
+    $tooLong = false;
     foreach ($fields as $key => $label) {
         $value = isset($_POST[$key]) && is_string($_POST[$key]) ? trim(strip_tags($_POST[$key])) : '';
-        $values[$key] = str_replace(["\r", "\n"], ' ', $value);
+        $value = str_replace(["\r", "\n"], ' ', $value);
+        if (strlen($value) > $maxLengths[$key]) {
+            $tooLong = true;
+        }
+        $values[$key] = $value;
     }
-    if ($values['firstname'] === '' || $values['lastname'] === '' ||
-        !filter_var($values['email'], FILTER_VALIDATE_EMAIL) ||
-        $values['contactnumber'] === '' || $values['paddress'] === '' || $values['daddress'] === '') {
-        $quoteStatus = 'Please complete the required fields and provide a valid email address.';
-    } elseif ($values['pdate'] !== '' && $values['ddate'] !== '' && $values['ddate'] < $values['pdate']) {
+    $requiredKeys = [
+        'firstname', 'lastname', 'email', 'contactnumber', 'paddress', 'daddress',
+        'pdate', 'ptime', 'ddate', 'pcity', 'pstate', 'dcity', 'dstate',
+        'receivername', 'shipmentType', 'pickupType'
+    ];
+    $missingRequired = false;
+    foreach ($requiredKeys as $key) {
+        if (($values[$key] ?? '') === '') {
+            $missingRequired = true;
+        }
+    }
+    $pickupDate = DateTime::createFromFormat('!Y-m-d', $values['pdate']);
+    $deliveryDate = DateTime::createFromFormat('!Y-m-d', $values['ddate']);
+    $validPickupDate = $pickupDate && $pickupDate->format('Y-m-d') === $values['pdate'];
+    $validDeliveryDate = $deliveryDate && $deliveryDate->format('Y-m-d') === $values['ddate'];
+    $validTime = (bool)preg_match('/^(?:[01]\\d|2[0-3]):[0-5]\\d$/', $values['ptime']);
+    $validShipmentType = in_array($values['shipmentType'], ['Air Freight', 'Marine Freight', 'Land Freight'], true);
+    $validPickupType = in_array($values['pickupType'], ['Bike', 'Van', 'Truck'], true);
+    if ($tooLong) {
+        $quoteStatus = 'One or more fields exceed the allowed length. Please shorten the details and try again.';
+    } elseif ($missingRequired || !filter_var($values['email'], FILTER_VALIDATE_EMAIL)) {
+        $quoteStatus = 'Please complete all required fields and provide a valid email address.';
+    } elseif (!$validPickupDate || !$validDeliveryDate || !$validTime) {
+        $quoteStatus = 'Enter valid pickup and expected delivery dates and a valid pickup time.';
+    } elseif (!$validShipmentType || !$validPickupType) {
+        $quoteStatus = 'Choose a valid shipment type and pickup vehicle.';
+    } elseif ($values['ddate'] < $values['pdate']) {
         $quoteStatus = 'Expected delivery date cannot be earlier than pickup date.';
     } else {
         $recipient = getenv('QUOTE_RECIPIENT_EMAIL') ?: '';
@@ -176,8 +210,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit']) &&
         </div>
         <div class="col-12 col-md-4 mb-3">
           <label class="mr-sm-2" for="inlineFormCustomSelect">Shipment Type</label>
-          <select class="custom-select mr-sm-2" name ="shipmentType" id="inlineFormCustomSelect">
-            <option selected>Choose...</option>
+          <select class="custom-select mr-sm-2" name ="shipmentType" id="inlineFormCustomSelect" required>
+            <option value="" selected disabled>Choose...</option>
             <option value="Air Freight">Air Freight</option>
             <option value="Marine Freight">Shipping</option>
             <option value="Land Freight">Land freight</option>
@@ -185,11 +219,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit']) &&
         </div>
         <div class="col-12 col-md-4 mb-3">
           <label class="mr-sm-2" for="inlineFormCustomSelect">Pick Up Vehicle Type</label>
-          <select class="custom-select mr-sm-2" name ="pickupType" id="inlineFormCustomSelect">
+          <select class="custom-select mr-sm-2" name ="pickupType" id="pickupVehicleType" required>
             <option selected>Choose...</option>
-            <option value="Air Freight">Bike</option>
-            <option value="Marine Freight">Van</option>
-            <option value="Land Freight">Truck</option>
+            <option value="Bike">Bike</option>
+            <option value="Van">Van</option>
+            <option value="Truck">Truck</option>
           </select>
         </div>
       </div>
