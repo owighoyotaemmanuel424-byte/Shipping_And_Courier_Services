@@ -1,56 +1,45 @@
 <?php
-				   
-  if(isset($_REQUEST['submit'])){
-
-    $fname=$_REQUEST['firstname'];
-    $lname=$_REQUEST['lastname'];
-    $email=$_REQUEST['email'];
-    $priphone=$_REQUEST['contactnumber'];
-    $pickaddress=$_REQUEST['paddress'];
-    $delivaddress=$_REQUEST['daddress'];
-    $pickdate=$_REQUEST['pdate'];
-    $picktime=$_REQUEST['ptime'];
-    $deliverydate=$_REQUEST['ddate'];
-    $pickcity=$_REQUEST['pcity'];
-    $pickstate=$_REQUEST['pstate'];
-    $pickcountry=$_REQUEST['pcountry'];
-    $delicity=$_REQUEST['dcity'];
-    $delistate=$_REQUEST['dstate'];
-    $delicountry=$_REQUEST['dcountry'];
-    $contname=$_REQUEST['receivername'];
-    $delitype=$_REQUEST['shipmentType'];
-    $vehitype=$_REQUEST['pickupType'];
-    $conpackage=$_REQUEST['content'];
-
-    $message=("Frist Name: $fname,
-        Last Name: $lname,
-        Primary Phone: $priphone,
-        Email: $email,
-        Pick Up Date: $pickdate,
-        Pick Up Time: $picktime,
-        Pick Up Address: $pickaddress,
-        Pick Up City: $pickcity,
-        Pick Up State: $pickstate,
-        Pick Up Country: $pickcountry,
-        Delivery Date: $deliverydate,
-        Delivery Address: $delivaddress,
-        Delivery City: $delicity,
-        Delivery State: $delistate,
-        Delivery Country: $delicountry,
-        Vehicle Type: $vehitype,
-        Type of Delivery: $delitype,
-        Delivery Contact Name: $contname,
-        Contents of Package: $conpackage.");
-
-    $to="hguruman@gmail.com";
-    $subject="Request Form";
-    $headers = "From: $email"; 
-    $sent = mail($to, $subject, $message, $headers) ; 
-    if($sent){
-    echo("<center>Your Request was sent successfully</center>");
-    }else{
-
-    echo("<center>We encountered an error sending your mail</center>");
+$quoteStatus = '';
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
+    $fields = [
+        'firstname' => 'First name', 'lastname' => 'Last name', 'email' => 'Email',
+        'contactnumber' => 'Contact number', 'paddress' => 'Pickup address',
+        'daddress' => 'Delivery address', 'pdate' => 'Pickup date', 'ptime' => 'Pickup time',
+        'ddate' => 'Expected delivery date', 'pcity' => 'Pickup city', 'pstate' => 'Pickup state',
+        'pcountry' => 'Pickup country', 'dcity' => 'Delivery city', 'dstate' => 'Delivery state',
+        'dcountry' => 'Delivery country', 'receivername' => 'Receiver name',
+        'shipmentType' => 'Shipment type', 'pickupType' => 'Pickup vehicle', 'content' => 'Parcel contents'
+    ];
+    $values = [];
+    foreach ($fields as $key => $label) {
+        $value = isset($_POST[$key]) && is_string($_POST[$key]) ? trim(strip_tags($_POST[$key])) : '';
+        $values[$key] = str_replace(["\\r", "\\n"], ' ', $value);
+    }
+    if ($values['firstname'] === '' || $values['lastname'] === '' ||
+        !filter_var($values['email'], FILTER_VALIDATE_EMAIL) ||
+        $values['contactnumber'] === '' || $values['paddress'] === '' || $values['daddress'] === '') {
+        $quoteStatus = 'Please complete the required fields and provide a valid email address.';
+    } elseif ($values['pdate'] !== '' && $values['ddate'] !== '' && $values['ddate'] < $values['pdate']) {
+        $quoteStatus = 'Expected delivery date cannot be earlier than pickup date.';
+    } else {
+        $recipient = getenv('QUOTE_RECIPIENT_EMAIL') ?: '';
+        $from = getenv('QUOTE_FROM_EMAIL') ?: '';
+        if (!filter_var($recipient, FILTER_VALIDATE_EMAIL) || !filter_var($from, FILTER_VALIDATE_EMAIL)) {
+            $quoteStatus = 'Quote requests are temporarily unavailable. Please contact the site administrator.';
+            error_log('Quote request email is not configured; set QUOTE_RECIPIENT_EMAIL and QUOTE_FROM_EMAIL.');
+        } else {
+            $lines = [];
+            foreach ($fields as $key => $label) {
+                $lines[] = $label . ': ' . ($values[$key] !== '' ? $values[$key] : 'Not provided');
+            }
+            $headers = "From: " . $from . "\r\n" . "Reply-To: " . $values['email'] . "\r\n" . "Content-Type: text/plain; charset=UTF-8";
+            if (mail($recipient, 'NEXTGEN shipping quote request', implode("\n", $lines), $headers)) {
+                $quoteStatus = 'Your quote request was sent successfully. Our team will review the details.';
+            } else {
+                $quoteStatus = 'We could not send your request right now. Please try again later.';
+                error_log('NEXTGEN quote request email could not be sent.');
+            }
+        }
     }
 }
 ?>
@@ -89,8 +78,9 @@
   <div class="row">
   <div class="col-12 col-md-9">
     <h2>Request a quote!</h2>
+    <?php if ($quoteStatus !== '') : ?><div class="alert alert-info" role="status"><?php echo htmlspecialchars($quoteStatus, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?></div><?php endif; ?>
     <div class="">
-    <form method="POST">
+    <form method="POST" action="quotation.php">
       <div class="form-row">
         <div class="col-12 col-md-6 mb-3">
           <label for="validationDefault01">First name</label>
