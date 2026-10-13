@@ -49,11 +49,11 @@
                     </div>
                     <div class="col-12 col-md-6 mb-3">
                       <label class="mr-sm-2" for="inlineFormCustomSelect">Shipment Type</label>
-                      <select class="custom-select mr-sm-2" name ="shipmentType" id="inlineFormCustomSelect">
-                        <option selected>Choose...</option>
-                        <option value="Air Freight">Air Freight</option>
-                        <option value="Marine Freight">Marine Freight</option>
-                        <option value="Land Freight">Land freight</option>
+                      <select class="custom-select mr-sm-2" name ="shipmentType" id="shipmentType" required>
+                        <option value="" disabled>Choose...</option>
+                        <option value="Air Freight" <?php echo $ship_type === 'Air Freight' ? 'selected' : ''; ?>>Air Freight</option>
+                        <option value="Marine Freight" <?php echo $ship_type === 'Marine Freight' ? 'selected' : ''; ?>>Marine Freight</option>
+                        <option value="Land Freight" <?php echo $ship_type === 'Land Freight' ? 'selected' : ''; ?>>Land freight</option>
                       </select>
                     </div>
                   </div>
@@ -120,13 +120,13 @@
                     </div>
                     <div class="col-12 col-md-6 mb-3">
                     <label class="mr-sm-2">Parcel Status</label>
-                      <select class="custom-select mr-sm-2" name ="status">
-                        <option selected>Choose...</option>
-                        <option  value="Shipped">Shipped</option>
-                        <option value="Delivered">Delivered</option>
-                        <option value="Transit">Transit</option>
-                        <option value="Packaging">Packaging</option>
-                        <option value="Missing Parcel">Missing Parcel</option>
+                      <select class="custom-select mr-sm-2" name ="status" id="parcelStatus" required>
+                        <option value="" selected disabled>Choose...</option>
+                        <option value="Shipped" <?php echo $status === 'Shipped' ? 'selected' : ''; ?>>Shipped</option>
+                        <option value="Delivered" <?php echo $status === 'Delivered' ? 'selected' : ''; ?>>Delivered</option>
+                        <option value="Transit" <?php echo $status === 'Transit' ? 'selected' : ''; ?>>Transit</option>
+                        <option value="Packaging" <?php echo $status === 'Packaging' ? 'selected' : ''; ?>>Packaging</option>
+                        <option value="Missing Parcel" <?php echo $status === 'Missing Parcel' ? 'selected' : ''; ?>>Missing Parcel</option>
                       </select>
                     </div>
                   </div>

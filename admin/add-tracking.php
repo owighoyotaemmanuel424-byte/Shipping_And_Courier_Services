@@ -47,8 +47,8 @@
                     </div>
                     <div class="col-12 col-md-6 mb-3">
                       <label class="mr-sm-2" for="inlineFormCustomSelect">Shipment Type</label>
-                      <select class="custom-select mr-sm-2" name ="shipmentType" id="inlineFormCustomSelect">
-                        <option selected>Choose...</option>
+                      <select class="custom-select mr-sm-2" name ="shipmentType" id="shipmentType" required>
+                        <option value="" selected disabled>Choose...</option>
                         <option value="Air Freight">Air Freight</option>
                         <option value="Marine Freight">Marine Freight</option>
                         <option value="Land Freight">Land freight</option>
@@ -118,10 +118,10 @@
                     </div>
                     <div class="col-12 col-md-6 mb-3">
                     <label class="mr-sm-2">Parcel Status</label>
-                      <select class="custom-select mr-sm-2" name ="status">
-                        <option selected>Choose...</option>
+                      <select class="custom-select mr-sm-2" name ="status" id="parcelStatus" required>
+                        <option value="" selected disabled>Choose...</option>
                         <option  value="Shipped">Shipped</option>
-                        <option value="DElivered">Delivered</option>
+                        <option value="Delivered">Delivered</option>
                         <option value="Transit">Transit</option>
                         <option value="Packaging">Packaging</option>
                         <option value="Missing Parcel">Missing Parcel</option>
