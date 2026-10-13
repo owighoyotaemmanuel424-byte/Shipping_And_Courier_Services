@@ -36,7 +36,7 @@ $fields = [
 $data = [];
 foreach ($fields as $key => $maxLength) {
     $value = trim((string)($_POST[$key] ?? ''));
-    $optional = in_array($key, ['szip', 'czip', 'dzip'], true);
+    $optional = in_array($key, ['content', 'szip', 'czip', 'dzip'], true);
     if ((!$optional && $value === '') || strlen($value) > $maxLength) {
         $_SESSION['ERRMSG_ARR'] = ['Please complete all shipment fields using valid values.'];
         mysqli_close($db);
@@ -55,6 +55,12 @@ if (!preg_match('/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/', $data[5]) || !preg_match('/^[0
     $_SESSION['ERRMSG_ARR'] = ['Enter valid shipment and delivery dates.'];
     mysqli_close($db);
     header('Location: edit.php?id=' . $id);
+    exit();
+}
+if (strcmp($data[6], $data[5]) < 0) {
+    $_SESSION['ERRMSG_ARR'] = ['Delivery date cannot be earlier than the shipment date.'];
+    mysqli_close($db);
+    header('Location: edit.php?id=' . $id');
     exit();
 }
 if (!preg_match('/^[A-Za-z0-9_-]+$/', $data[2])) {
