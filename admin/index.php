@@ -1,3 +1,18 @@
+<?php
+if (session_status() !== PHP_SESSION_ACTIVE) {
+    $isHttps = !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off';
+    session_set_cookie_params([
+        'httponly' => true,
+        'secure' => $isHttps,
+        'samesite' => 'Lax',
+        'path' => '/',
+    ]);
+    session_start();
+}
+if (empty($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -47,7 +62,8 @@
                                     </div>
                                 </div>
                                 <div class="form-bottom">
-                                    <form role="form" action="login-exec.php" name ="login" method="POST" class="login-form">
+                                    <form role="form" action="login-exec.php" name="login" method="POST" class="login-form">
+                                        <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token'], ENT_QUOTES, 'UTF-8'); ?>">
                                         <div class="form-group">
                                             <label class="sr-only" for="form-username">Username</label>
                                             <input type="text" name="username" placeholder="Username..." class="form-username form-control" id="form-username">
