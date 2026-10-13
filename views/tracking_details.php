@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-if($_SESSION['USER_NUM'] == "") {
+if (empty($_SESSION['USER_NUM'])) {
     header("location: tracking.php");
     exit();
 }
@@ -30,12 +30,23 @@ if($_SESSION['USER_NUM'] == "") {
     $num = $_SESSION['USER_NUM'];
     require_once('../database/config.php');
     $conn = mysqli_connect(DB_HOST, DB_USER, DB_PASSWORD, DB_DATABASE);
-    $query = "SELECT * FROM tracking WHERE tracking_number = '$num'";
-    $result = mysqli_query($conn, $query);
-    if(!$result){
-        die("Connection failed: " . mysqli_connect_error());
+    if (!$conn) {
+        error_log('Tracking details database connection failed: ' . mysqli_connect_error());
+        http_response_code(503);
+        exit('Tracking information is temporarily unavailable.');
     }
-    if(mysqli_num_rows($result) == 1) {
+    mysqli_set_charset($conn, 'utf8mb4');
+    $stmt = mysqli_prepare($conn, 'SELECT * FROM tracking WHERE tracking_number = ? LIMIT 1');
+    if (!$stmt) {
+        error_log('Tracking details query preparation failed: ' . mysqli_error($conn));
+        mysqli_close($conn);
+        http_response_code(503);
+        exit('Tracking information is temporarily unavailable.');
+    }
+    mysqli_stmt_bind_param($stmt, 's', $num);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+    if ($result && mysqli_num_rows($result) === 1) {
         while($row = mysqli_fetch_array($result)) {
             $id = $row['id'];
             $num = $row['tracking_number'];
@@ -51,7 +62,17 @@ if($_SESSION['USER_NUM'] == "") {
             $status = $row['parcel_status'];
         }
     } else {
-        echo "o results";
+        mysqli_stmt_close($stmt);
+        mysqli_close($conn);
+        unset($_SESSION['USER_NUM']);
+        $_SESSION['ERRMSG_ARR'] = ['We could not find that shipment. Please track it again.'];
+        header('Location: tracking.php');
+        exit();
+    }
+    mysqli_stmt_close($stmt);
+    mysqli_close($conn);
+    function tracking_escape($value) {
+        return htmlspecialchars((string)$value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
     }
 ?>
 
@@ -62,7 +83,7 @@ if($_SESSION['USER_NUM'] == "") {
       </div>
       <ol class="breadcrumb justify-content-center">
         <li><a href="#">Tracking Number </a></li>
-        <li class="active">: <?php echo $num; ?></li>
+        <li class="active">: <?php echo tracking_escape($num); ?></li>
       </ol>
     </div>
 </section>
@@ -81,47 +102,47 @@ if($_SESSION['USER_NUM'] == "") {
             <tbody>
               <tr class="boldder">
                 <td>Tracking Number</td>
-                <td><?php echo $num; ?></td>
+                <td><?php echo tracking_escape($num); ?></td>
               </tr>
               <tr class="boldder">
                 <td>Ship Date</td>
-                <td><?php echo $shipdate; ?></td>
+                <td><?php echo tracking_escape($shipdate); ?></td>
               </tr>
               <tr class="boldder">
                 <td>Estimated Delivery Date</td>
-                <td><?php echo $estimate_date; ?></td>
+                <td><?php echo tracking_escape($estimate_date); ?></td>
               </tr>
               <tr class="boldder">
                 <td>Shipment Type</td>
-                <td><?php echo $ship_type; ?></td>
+                <td><?php echo tracking_escape($ship_type); ?></td>
               </tr>
               <t class="boldder"r>
                 <td>Parcel Content</td>
-                <td><?php echo $content; ?></td>
+                <td><?php echo tracking_escape($content); ?></td>
               </tr>
               <tr class="boldder">
                 <td>Receiver Name</td>
-                <td><?php echo $receiver; ?></td>
+                <td><?php echo tracking_escape($receiver); ?></td>
               </tr>
               <tr class="boldder">
                 <td>Source Address</td>
-                <td><?php echo $source_address; ?></td>
+                <td><?php echo tracking_escape($source_address); ?></td>
               </tr>
               <tr class="boldder">
                 <td>Current Location</td>
-                <td><?php echo $current_address; ?></td>
+                <td><?php echo tracking_escape($current_address); ?></td>
               </tr>
               <tr class="boldder">
                 <td>Destination Address</td>
-                <td><?php echo $destination_address; ?></td>
+                <td><?php echo tracking_escape($destination_address); ?></td>
               </tr>
               <tr class="boldder">
                 <td>Contact Number</td>
-                <td><?php echo $phone; ?></td>
+                <td><?php echo tracking_escape($phone); ?></td>
               </tr>
               <tr class="boldder">
                 <td>Parcel Status</td>
-                <td><?php echo $status; ?></td>
+                <td><?php echo tracking_escape($status); ?></td>
               </tr>
             </tbody>
           </table>
