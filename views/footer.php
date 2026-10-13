@@ -7,8 +7,7 @@ $footerPagePrefix = strpos($_SERVER['SCRIPT_NAME'] ?? '', '/views/') !== false ?
 			<div class="col-sm-4">
 				<div class="footer-widget">
 					<h3>About</h3>
-					<p>NEXTGEN Logistics is a representative logistics operator providing full range of service in the sphere of customs cargo and
-					transportation worldwide.
+					<p>NEXTGEN Logistics helps customers explore shipping options, request quotes and check available tracking updates.
 					</p>
 					<br>
 
@@ -34,10 +33,10 @@ $footerPagePrefix = strpos($_SERVER['SCRIPT_NAME'] ?? '', '/views/') !== false ?
 								<li><a href="<?php echo $footerPagePrefix; ?>about.php">About us</a></li>
 								<li><a href="<?php echo $footerPagePrefix; ?>tracking.php">Track a shipment</a></li>
 								<li><a href="<?php echo $footerPagePrefix; ?>contact.php">Contact</a></li>
-								<li><a href="#">Career</a></li>
-								<li><a href="#">Staffs</a></li>
-								<li><a href="#">News</a></li>
-								<li><a href="#">Support</a></li>
+								
+								
+								
+								
 							</ul>
 						</div>
 						<div class="col-sm-6">
@@ -55,22 +54,11 @@ $footerPagePrefix = strpos($_SERVER['SCRIPT_NAME'] ?? '', '/views/') !== false ?
 
 			<div class="col-sm-4">
 				<div class="footer-widget">
-					<h3>Stay in Touch</h3>
-					<p>Enter your email address to receive news &amp; offers from us</p>
-
-					<form class="newsletter-form">
-						<div class="form-group">
-							<label class="sr-only" for="InputEmail1">Email address</label>
-							<input type="email" class="form-control" id="InputEmail1" placeholder="Your email address">
-							<button type="submit" class="btn">Send &nbsp;<i class="fa fa-angle-right"></i></button>
-						</div>
-					</form>		
-					<ul class="social-links list-inline">
-						<li class="list-inline-item"><a class="facebook" href="#"><i class="fa fa-facebook"></i></a></li>
-						<li class="list-inline-item"><a class="twitter" href="#"><i class="fa fa-twitter"></i></a></li>
-						<li class="list-inline-item"><a class="google-plus" href="#"><i class="fa fa-google-plus"></i></a></li>
-						<li class="list-inline-item"><a class="linkedin" href="#"><i class="fa fa-linkedin"></i></a></li>
-					</ul>        				
+					<h3>Need shipping help?</h3>
+					<p>Have a shipment to move or need an update? Choose the right next step and our team can review your request.</p>
+					<p><a class="btn btn-primary" href="<?php echo $footerPagePrefix; ?>quotation.php">Request a quote</a></p>
+					<p><a href="<?php echo $footerPagePrefix; ?>tracking.php"><i class="fas fa-route mr-2" aria-hidden="true"></i>Track a shipment</a></p>
+					<p><a href="<?php echo $footerPagePrefix; ?>contact.php"><i class="fas fa-headset mr-2" aria-hidden="true"></i>Customer support</a></p>
 				</div><!-- /.footer-widget -->
 			</div><!-- /.col-md-4 -->
 		</div><!-- /.row -->
@@ -80,9 +68,9 @@ $footerPagePrefix = strpos($_SERVER['SCRIPT_NAME'] ?? '', '/views/') !== false ?
   <div class="container">
     <div class="footer-menu">
       <ul>
-        <li><a href="#">Privacy &amp; Cookies</a></li>
-        <li><a href="#">Terms &amp; Conditions</a></li>
-        <li><a href="#">Accessibility</a></li>
+        <li><a href="<?php echo $footerPagePrefix; ?>contact.php">Privacy enquiries</a></li>
+        <li><a href="<?php echo $footerPagePrefix; ?>about.php">Service information</a></li>
+        <li><a href="<?php echo $footerPagePrefix; ?>contact.php">Accessibility support</a></li>
       </ul>
     </div>
 

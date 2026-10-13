@@ -84,7 +84,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit']) &&
         <h1>Request a Quote</h1>
       </div>
       <ol class="breadcrumb justify-content-center">
-        <li><a href="#">Home </a></li>
+        <li><a href="../index.php">Home</a></li>
         <li class="active">/ Quote</li>
       </ol>
     </div>
