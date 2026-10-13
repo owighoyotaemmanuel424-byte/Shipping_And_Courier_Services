@@ -1,6 +1,5 @@
 <?php
     include('session.php');
-    include_once('submittracking.php');
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -30,7 +29,7 @@
               <div class="col-12 col-md-9">
                 <h3>Add New Tracked Parcel</h3>
                 <div class="mb-3">
-                <form method="POST">
+                <form action="submittracking.php" method="POST"><input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token'], ENT_QUOTES, 'UTF-8'); ?>">
                   <div class="form-row">
                     <div class="col-12 col-md-6 mb-3">
                       <label for="validationDefault01">First name</label>
