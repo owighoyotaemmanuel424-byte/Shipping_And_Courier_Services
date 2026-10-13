@@ -1,5 +1,14 @@
 <?php
-session_start();
+if (session_status() !== PHP_SESSION_ACTIVE) {
+    $isHttps = !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off';
+    session_set_cookie_params([
+        'httponly' => true,
+        'secure' => $isHttps,
+        'samesite' => 'Lax',
+        'path' => '/',
+    ]);
+    session_start();
+}
 require_once __DIR__ . '/../database/config.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -16,7 +25,7 @@ if ($username === '' || $password === '' || strlen($username) > 190 || strlen($p
     exit();
 }
 
-$db = mysqli_connect(DB_HOST, DB_USER, DB_PASSWORD, DB_DATABASE);
+$db = mysqli_connect(DB_HOST, DB_USER, DB_PASSWORD, DB_DATABASE, DB_PORT);
 if (!$db) {
     error_log('Admin login database connection failed: ' . mysqli_connect_error());
     $_SESSION['ERRMSG_ARR'] = ['Login is temporarily unavailable. Please try again later.'];
