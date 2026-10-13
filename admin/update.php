@@ -48,13 +48,13 @@ foreach ($fields as $key => $maxLength) {
 if (!in_array($data[3], ['Air Freight', 'Marine Freight', 'Land Freight'], true) || !in_array($data[17], ['Shipped', 'Delivered', 'Transit', 'Packaging', 'Missing Parcel'], true)) {
     $_SESSION['ERRMSG_ARR'] = ['Choose a valid shipment type and parcel status.'];
     mysqli_close($db);
-    header('Location: undefined');
+    header('Location: edit.php?id=' . $id);
     exit();
 }
 if (!preg_match('/^\\d{4}-\\d{2}-\\d{2}$/', $data[5]) || !preg_match('/^\\d{4}-\\d{2}-\\d{2}$/', $data[6]) || !checkdate((int)substr($data[5], 5, 2), (int)substr($data[5], 8, 2), (int)substr($data[5], 0, 4)) || !checkdate((int)substr($data[6], 5, 2), (int)substr($data[6], 8, 2), (int)substr($data[6], 0, 4))) {
     $_SESSION['ERRMSG_ARR'] = ['Enter valid shipment and delivery dates.'];
     mysqli_close($db);
-    header('Location: undefined');
+    header('Location: edit.php?id=' . $id);
     exit();
 }
 if (!preg_match('/^[A-Za-z0-9_-]+$/', $data[2])) {
