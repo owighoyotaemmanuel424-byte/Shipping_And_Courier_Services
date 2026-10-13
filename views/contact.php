@@ -24,7 +24,7 @@
         <h1>Contact</h1>
       </div>
       <ol class="breadcrumb justify-content-center">
-        <li><a href="#">Home </a></li>
+        <li><a href="../index.php">Home</a></li>
         <li class="active">/ Contact</li>
       </ol>
     </div>
@@ -35,19 +35,19 @@
 <section class="contact-wrap section-padding">
 						<div class="container">
 							<div class="office-locations">
-								<h2>Worldwide Location</h2>
+								<h2>Talk to our logistics team</h2>
 								<div class="row">
 									<div class="col-sm-3 col-xs-6">
 										<div class="office-address">
 											<h3>Head Office</h3>
 											<address>
-												<span>384 Maple Circle</span>
-												<span>Simi Valley Navada 47489</span>
+												<span>Service locations vary by route</span>
+												<span>Contact us to confirm route availability</span>
 												<br>
-												<span>T.(554) 616 9926</span>
-												<span>M.(554) 616 9926</span>
-												<span>F.(554) 616 9926</span>
-												<a href="#">example@yahoo.com</a>
+												<span></span>
+												<span></span>
+												<span></span>
+												<a href="quotation.php">Request a shipping quote</a>
 
 											</address>
 										</div>
@@ -57,13 +57,13 @@
 										<div class="office-address">
 											<h3>State Office</h3>
 											<address>
-												<span>384 Maple Circle</span>
-												<span>Simi Valley Navada 47489</span>
+												<span>Service locations vary by route</span>
+												<span>Contact us to confirm route availability</span>
 												<br>
-												<span>T.(554) 616 9926</span>
-												<span>M.(554) 616 9926</span>
-												<span>F.(554) 616 9926</span>
-												<a href="#">example@yahoo.com</a>
+												<span></span>
+												<span></span>
+												<span></span>
+												<a href="quotation.php">Request a shipping quote</a>
 
 											</address>
 										</div>
@@ -73,13 +73,13 @@
 										<div class="office-address">
 											<h3>Country Office</h3>
 											<address>
-												<span>384 Maple Circle</span>
-												<span>Simi Valley Navada 47489</span>
+												<span>Service locations vary by route</span>
+												<span>Contact us to confirm route availability</span>
 												<br>
-												<span>T.(554) 616 9926</span>
-												<span>M.(554) 616 9926</span>
-												<span>F.(554) 616 9926</span>
-												<a href="#">example@yahoo.com</a>
+												<span></span>
+												<span></span>
+												<span></span>
+												<a href="quotation.php">Request a shipping quote</a>
 
 											</address>
 										</div>
@@ -89,13 +89,13 @@
 										<div class="office-address">
 											<h3>Zonal Office</h3>
 											<address>
-												<span>384 Maple Circle</span>
-												<span>Simi Valley Navada 47489</span>
+												<span>Service locations vary by route</span>
+												<span>Contact us to confirm route availability</span>
 												<br>
-												<span>T.(554) 616 9926</span>
-												<span>M.(554) 616 9926</span>
-												<span>F.(554) 616 9926</span>
-												<a href="#">example@yahoo.com</a>
+												<span></span>
+												<span></span>
+												<span></span>
+												<a href="quotation.php">Request a shipping quote</a>
 
 											</address>
 										</div>
@@ -107,13 +107,13 @@
 										<div class="office-address">
 											<h3>USA Office</h3>
 											<address>
-												<span>384 Maple Circle</span>
-												<span>Simi Valley Navada 47489</span>
+												<span>Service locations vary by route</span>
+												<span>Contact us to confirm route availability</span>
 												<br>
-												<span>T.(554) 616 9926</span>
-												<span>M.(554) 616 9926</span>
-												<span>F.(554) 616 9926</span>
-												<a href="#">example@yahoo.com</a>
+												<span></span>
+												<span></span>
+												<span></span>
+												<a href="quotation.php">Request a shipping quote</a>
 
 											</address>
 										</div>
@@ -123,13 +123,13 @@
 										<div class="office-address">
 											<h3>Atlanta Office</h3>
 											<address>
-												<span>384 Maple Circle</span>
-												<span>Simi Valley Navada 47489</span>
+												<span>Service locations vary by route</span>
+												<span>Contact us to confirm route availability</span>
 												<br>
-												<span>T.(554) 616 9926</span>
-												<span>M.(554) 616 9926</span>
-												<span>F.(554) 616 9926</span>
-												<a href="#">example@yahoo.com</a>
+												<span></span>
+												<span></span>
+												<span></span>
+												<a href="quotation.php">Request a shipping quote</a>
 
 											</address>
 										</div>
@@ -139,13 +139,13 @@
 										<div class="office-address">
 											<h3>Singapore Office</h3>
 											<address>
-												<span>384 Maple Circle</span>
-												<span>Simi Valley Navada 47489</span>
+												<span>Service locations vary by route</span>
+												<span>Contact us to confirm route availability</span>
 												<br>
-												<span>T.(554) 616 9926</span>
-												<span>M.(554) 616 9926</span>
-												<span>F.(554) 616 9926</span>
-												<a href="#">example@yahoo.com</a>
+												<span></span>
+												<span></span>
+												<span></span>
+												<a href="quotation.php">Request a shipping quote</a>
 
 											</address>
 										</div>
@@ -155,13 +155,13 @@
 										<div class="office-address">
 											<h3>Canada Office</h3>
 											<address>
-												<span>384 Maple Circle</span>
-												<span>Simi Valley Navada 47489</span>
+												<span>Service locations vary by route</span>
+												<span>Contact us to confirm route availability</span>
 												<br>
-												<span>T.(554) 616 9926</span>
-												<span>M.(554) 616 9926</span>
-												<span>F.(554) 616 9926</span>
-												<a href="#">example@yahoo.com</a>
+												<span></span>
+												<span></span>
+												<span></span>
+												<a href="quotation.php">Request a shipping quote</a>
 
 											</address>
 										</div>
