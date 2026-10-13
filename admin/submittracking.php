@@ -6,7 +6,7 @@ if (empty($_SESSION['userId'])) {
     header('Location: index.php');
     exit();
 }
-if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !isset($_POST['submit'])) {
+if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !isset($_POST['submit']) || empty($_SESSION['csrf_token']) || !hash_equals($_SESSION['csrf_token'], (string)($_POST['csrf_token'] ?? ''))) {
     header('Location: dashboard.php');
     exit();
 }
@@ -55,7 +55,7 @@ if (!$stmt) {
     header('Location: add-tracking.php');
     exit();
 }
-mysqli_stmt_bind_param($stmt, 'ssssssssssssssssss', ...$data);
+mysqli_stmt_bind_param($stmt, 'ssssssssssssssssss', $data[0], $data[1], $data[2], $data[3], $data[4], $data[5], $data[6], $data[7], $data[8], $data[9], $data[10], $data[11], $data[12], $data[13], $data[14], $data[15], $data[16], $data[17]);
 if (!mysqli_stmt_execute($stmt)) {
     $duplicate = mysqli_stmt_errno($stmt) === 1062;
     error_log('Create shipment failed with database error ' . mysqli_stmt_errno($stmt));
