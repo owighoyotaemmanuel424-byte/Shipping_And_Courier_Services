@@ -32,7 +32,7 @@
         <h1>Track A Parcel</h1>
       </div>
       <ol class="breadcrumb justify-content-center">
-        <li><a href="#">Home </a></li>
+        <li><a href="../index.php">Home</a></li>
         <li class="active">/ Track A Parcel</li>
       </ol>
     </div>
@@ -60,7 +60,7 @@
     </div>
     <div class="row my-5">
         <div class="w-75 mx-auto">
-          <img class="img-responsive w-100" src="../assets/images/tracking/track1.jpg" alt="thumb">
+          <img class="img-responsive w-100" src="../assets/images/tracking/track1.jpg" alt="Shipment tracking and delivery">
         </div>
     </div>
 </div>
