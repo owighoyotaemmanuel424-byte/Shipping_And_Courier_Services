@@ -16,7 +16,7 @@ if ($trackingNumber === '' || strlen($trackingNumber) > 100 || !preg_match('/^[A
     exit();
 }
 
-$conn = mysqli_connect(DB_HOST, DB_USER, DB_PASSWORD, DB_DATABASE);
+$conn = mysqli_connect(DB_HOST, DB_USER, DB_PASSWORD, DB_DATABASE, DB_PORT);
 if (!$conn) {
     error_log('Tracking lookup database connection failed: ' . mysqli_connect_error());
     $_SESSION['ERRMSG_ARR'] = ['Tracking is temporarily unavailable. Please try again shortly.'];
