@@ -17,7 +17,7 @@ if (empty($_SESSION['userId']) || empty($_SESSION['username'])) {
     exit();
 }
 
-$db = mysqli_connect(DB_HOST, DB_USER, DB_PASSWORD, DB_DATABASE);
+$db = mysqli_connect(DB_HOST, DB_USER, DB_PASSWORD, DB_DATABASE, DB_PORT);
 if (!$db) {
     error_log('Admin session validation database connection failed: ' . mysqli_connect_error());
     $_SESSION = [];
