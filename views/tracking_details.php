@@ -29,7 +29,7 @@ if (empty($_SESSION['USER_NUM'])) {
 <?php
     $num = $_SESSION['USER_NUM'];
     require_once('../database/config.php');
-    $conn = mysqli_connect(DB_HOST, DB_USER, DB_PASSWORD, DB_DATABASE);
+    $conn = mysqli_connect(DB_HOST, DB_USER, DB_PASSWORD, DB_DATABASE, DB_PORT);
     if (!$conn) {
         error_log('Tracking details database connection failed: ' . mysqli_connect_error());
         http_response_code(503);
