@@ -1,5 +1,7 @@
 <?php
 if (session_status() !== PHP_SESSION_ACTIVE) {
+    $isHttps = !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off';
+    session_set_cookie_params(['httponly' => true, 'secure' => $isHttps, 'samesite' => 'Lax', 'path' => '/']);
     session_start();
 }
 if (empty($_SESSION['userId'])) {
