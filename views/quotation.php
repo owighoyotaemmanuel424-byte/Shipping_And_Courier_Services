@@ -13,7 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
     $values = [];
     foreach ($fields as $key => $label) {
         $value = isset($_POST[$key]) && is_string($_POST[$key]) ? trim(strip_tags($_POST[$key])) : '';
-        $values[$key] = str_replace(["\\r", "\\n"], ' ', $value);
+        $values[$key] = str_replace(["\r", "\n"], ' ', $value);
     }
     if ($values['firstname'] === '' || $values['lastname'] === '' ||
         !filter_var($values['email'], FILTER_VALIDATE_EMAIL) ||
