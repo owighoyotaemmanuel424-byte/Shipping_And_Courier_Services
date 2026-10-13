@@ -209,8 +209,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit']) &&
           <input type="text" name ="receivername" class="form-control" id="validationDefault01" placeholder="John Doe" required>
         </div>
         <div class="col-12 col-md-4 mb-3">
-          <label class="mr-sm-2" for="inlineFormCustomSelect">Shipment Type</label>
-          <select class="custom-select mr-sm-2" name ="shipmentType" id="inlineFormCustomSelect" required>
+          <label class="mr-sm-2" for="shipmentType">Shipment Type</label>
+          <select class="custom-select mr-sm-2" name ="shipmentType" id="shipmentType" required>
             <option value="" selected disabled>Choose...</option>
             <option value="Air Freight">Air Freight</option>
             <option value="Marine Freight">Shipping</option>
@@ -220,7 +220,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit']) &&
         <div class="col-12 col-md-4 mb-3">
           <label class="mr-sm-2" for="inlineFormCustomSelect">Pick Up Vehicle Type</label>
           <select class="custom-select mr-sm-2" name ="pickupType" id="pickupVehicleType" required>
-            <option selected>Choose...</option>
+            <option value="" selected disabled>Choose...</option>
             <option value="Bike">Bike</option>
             <option value="Van">Van</option>
             <option value="Truck">Truck</option>
