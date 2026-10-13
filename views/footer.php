@@ -1,3 +1,6 @@
+<?php
+$footerPagePrefix = strpos($_SERVER['SCRIPT_NAME'] ?? '', '/views/') !== false ? '' : 'views/';
+?>
 <section class="footer-widget-section">
 	<div class="container">
 		<div class="row">
@@ -12,7 +15,7 @@
 					<address>
 						<strong>Customer support</strong>
 						<br>
-						<a href="contact.php">Contact our team</a>
+						<a href="<?php echo $footerPagePrefix; ?>contact.php">Contact our team</a>
 						<br>
 						<br>
 						<span class="map-marker">Pickup and delivery coverage depends on your route.</span>
@@ -28,9 +31,9 @@
 					<div class="row">
 						<div class="col-sm-6">
 							<ul class="quick-links">
-								<li><a href="about.php">About us</a></li>
-								<li><a href="tracking.php">Track a shipment</a></li>
-								<li><a href="contact.php">Contact</a></li>
+								<li><a href="<?php echo $footerPagePrefix; ?>about.php">About us</a></li>
+								<li><a href="<?php echo $footerPagePrefix; ?>tracking.php">Track a shipment</a></li>
+								<li><a href="<?php echo $footerPagePrefix; ?>contact.php">Contact</a></li>
 								<li><a href="#">Career</a></li>
 								<li><a href="#">Staffs</a></li>
 								<li><a href="#">News</a></li>
@@ -39,11 +42,11 @@
 						</div>
 						<div class="col-sm-6">
 							<ul class="quick-links">
-								<li><a href="services.php">Our services</a></li>
-								<li><a href="quotation.php">Request a quote</a></li>
-								<li><a href="contact.php">Customer support</a></li>
-								<li><a href="about.php">Why NEXTGEN</a></li>
-								<li><a href="services.php">Freight services</a></li>
+								<li><a href="<?php echo $footerPagePrefix; ?>services.php">Our services</a></li>
+								<li><a href="<?php echo $footerPagePrefix; ?>quotation.php">Request a quote</a></li>
+								<li><a href="<?php echo $footerPagePrefix; ?>contact.php">Customer support</a></li>
+								<li><a href="<?php echo $footerPagePrefix; ?>about.php">Why NEXTGEN</a></li>
+								<li><a href="<?php echo $footerPagePrefix; ?>services.php">Freight services</a></li>
 							</ul>
 						</div>
 					</div>
