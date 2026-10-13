@@ -30,7 +30,7 @@
               <div class="col-12 col-md-9">
                 <h3>Update Tracked Parcel</h3>
                 <div class="mb-4">
-                <form method="POST" action="./update.php">
+                <form method="POST" action="./update.php"><input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION[\'csrf_token\'], ENT_QUOTES, \'UTF-8\'); ?>">
                   <div class="form-row">
                     <div class="col-12 col-md-6 mb-3">
                       <input type="hidden" name="id" value="<?php echo $id; ?>">
