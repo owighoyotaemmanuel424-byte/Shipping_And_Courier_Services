@@ -6,7 +6,7 @@ if (empty($_SESSION['userId'])) {
     header('Location: index.php');
     exit();
 }
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+if ($_SERVER['REQUEST_METHOD'] !== 'POST' || empty($_SESSION['csrf_token']) || !hash_equals($_SESSION['csrf_token'], (string)($_POST['csrf_token'] ?? ''))) {
     header('Allow: POST');
     http_response_code(405);
     exit('Method not allowed');
