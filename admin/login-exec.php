@@ -17,6 +17,12 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit('Method not allowed');
 }
 
+if (empty($_SESSION['csrf_token']) || !hash_equals($_SESSION['csrf_token'], (string)($_POST['csrf_token'] ?? ''))) {
+    $_SESSION['ERRMSG_ARR'] = ['Your login session expired. Please try again.'];
+    header('Location: index.php');
+    exit();
+}
+
 $username = trim((string)($_POST['username'] ?? ''));
 $password = (string)($_POST['password'] ?? '');
 if ($username === '' || $password === '' || strlen($username) > 190 || strlen($password) > 4096) {
