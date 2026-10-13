@@ -33,201 +33,36 @@
     include_once("map.php");
 ?>
 <section class="contact-wrap section-padding">
-						<div class="container">
-							<div class="office-locations">
-								<h2>Talk to our logistics team</h2>
-								<div class="row">
-									<div class="col-sm-3 col-xs-6">
-										<div class="office-address">
-											<h3>Head Office</h3>
-											<address>
-												<span>Service locations vary by route</span>
-												<span>Contact us to confirm route availability</span>
-												<br>
-												<span></span>
-												<span></span>
-												<span></span>
-												<a href="quotation.php">Request a shipping quote</a>
-
-											</address>
-										</div>
-									</div><!-- /.col -->
-
-									<div class="col-sm-3 col-xs-6">
-										<div class="office-address">
-											<h3>State Office</h3>
-											<address>
-												<span>Service locations vary by route</span>
-												<span>Contact us to confirm route availability</span>
-												<br>
-												<span></span>
-												<span></span>
-												<span></span>
-												<a href="quotation.php">Request a shipping quote</a>
-
-											</address>
-										</div>
-									</div><!-- /.col -->
-
-									<div class="col-sm-3 col-xs-6">
-										<div class="office-address">
-											<h3>Country Office</h3>
-											<address>
-												<span>Service locations vary by route</span>
-												<span>Contact us to confirm route availability</span>
-												<br>
-												<span></span>
-												<span></span>
-												<span></span>
-												<a href="quotation.php">Request a shipping quote</a>
-
-											</address>
-										</div>
-									</div><!-- /.col -->
-
-									<div class="col-sm-3 col-xs-6">
-										<div class="office-address">
-											<h3>Zonal Office</h3>
-											<address>
-												<span>Service locations vary by route</span>
-												<span>Contact us to confirm route availability</span>
-												<br>
-												<span></span>
-												<span></span>
-												<span></span>
-												<a href="quotation.php">Request a shipping quote</a>
-
-											</address>
-										</div>
-									</div><!-- /.col -->
-								</div><!-- /.row -->
-
-								<div class="row">
-									<div class="col-sm-3 col-xs-6">
-										<div class="office-address">
-											<h3>USA Office</h3>
-											<address>
-												<span>Service locations vary by route</span>
-												<span>Contact us to confirm route availability</span>
-												<br>
-												<span></span>
-												<span></span>
-												<span></span>
-												<a href="quotation.php">Request a shipping quote</a>
-
-											</address>
-										</div>
-									</div><!-- /.col -->
-
-									<div class="col-sm-3 col-xs-6">
-										<div class="office-address">
-											<h3>Atlanta Office</h3>
-											<address>
-												<span>Service locations vary by route</span>
-												<span>Contact us to confirm route availability</span>
-												<br>
-												<span></span>
-												<span></span>
-												<span></span>
-												<a href="quotation.php">Request a shipping quote</a>
-
-											</address>
-										</div>
-									</div><!-- /.col -->
-
-									<div class="col-sm-3 col-xs-6">
-										<div class="office-address">
-											<h3>Singapore Office</h3>
-											<address>
-												<span>Service locations vary by route</span>
-												<span>Contact us to confirm route availability</span>
-												<br>
-												<span></span>
-												<span></span>
-												<span></span>
-												<a href="quotation.php">Request a shipping quote</a>
-
-											</address>
-										</div>
-									</div><!-- /.col -->
-
-									<div class="col-sm-3 col-xs-6">
-										<div class="office-address">
-											<h3>Canada Office</h3>
-											<address>
-												<span>Service locations vary by route</span>
-												<span>Contact us to confirm route availability</span>
-												<br>
-												<span></span>
-												<span></span>
-												<span></span>
-												<a href="quotation.php">Request a shipping quote</a>
-
-											</address>
-										</div>
-									</div><!-- /.col -->
-								</div><!-- /.row -->
-							</div><!-- /.office-locations -->
-
-							<div class="send-feedback">
-								<h2>Send us your feedback</h2>
-								<form id="contactForm" action="sendemail.php" method="POST">
-								  	<div class="row">
-								  	  	<div class="col-sm-4 col-12">
-										  <div class="form-group">
-										    <label for="name">Name*</label>
-										    <input id="name" name="name" type="text" class="form-control" required="" placeholder="">
-										  </div>
-									 	</div><!-- /.col -->
-									 	<div class="col-sm-4 col-12">
-										  <div class="form-group">
-										    <label for="email">E-mail*</label>
-										    <input id="email" name="email" type="email" class="form-control" required="" placeholder="">
-										  </div>
-										</div><!-- /.col -->
-										<div class="col-sm-4 col-12">
-										  <div class="form-group">
-										    <label for="url">Website</label>
-										    <input id="url" name="url" type="text" class="form-control" placeholder="">
-										  </div>
-										</div><!-- /.col -->
-								  	</div><!-- /.row -->
-								  	<div class="row">
-								  	  	<div class="col-sm-4 col-12">
-										  <div class="form-group">
-										    <label for="organization">Organization</label>
-										    <input id="organization" name="organization" type="text" class="form-control" placeholder="">
-										  </div>
-									 	</div><!-- /.col -->
-									 	<div class="col-sm-4 col-12">
-										  <div class="form-group">
-										    <label for="position">Position</label>
-										    <input id="position" name="position" type="text" class="form-control" placeholder="">
-										  </div>
-										</div><!-- /.col -->
-										<div class="col-sm-4 col-12">
-										  <div class="form-group">
-										    <label for="country">Country</label>
-										    <input id="country" name="country" type="text" class="form-control" placeholder="">
-										  </div>
-										</div><!-- /.col -->
-								  	</div><!-- /.row -->
-								  	<div class="row">
-                      <div class="col-12">
-                        <div class="form-group">
-                            <label>Message</label>
-                            <textarea id="message" name="message" class="form-control" rows="6" required="" placeholder=""></textarea>
-                        </div>
-										</div><!-- /.col -->
-								  	</div><!-- /.row -->
-
-								  	<div class="form-group submit-btn">
-								 	 	<button type="submit" class="btn btn-primary">Send feedback</button>
-								  	</div>
-								</form>
-							</div><!-- /.send-feedback -->
-						</div><!-- /.container -->
-					</section>
+  <div class="container">
+    <div class="section-heading">
+      <h2 class="section-title">How can we help?</h2>
+      <p>Choose the next step that best matches your shipment. Service availability and delivery estimates are confirmed for each route.</p>
+    </div>
+    <div class="row">
+      <div class="col-12 col-md-4 mb-4">
+        <article class="office-address h-100">
+          <h3>Request a quote</h3>
+          <p>Share your pickup and delivery locations, shipment details and preferred dates so the team can review your request.</p>
+          <a class="btn btn-primary" href="quotation.php">Get a shipping quote</a>
+        </article>
+      </div>
+      <div class="col-12 col-md-4 mb-4">
+        <article class="office-address h-100">
+          <h3>Track a shipment</h3>
+          <p>Use the tracking number provided for your shipment to view its available tracking details.</p>
+          <a class="btn btn-primary" href="tracking.php">Track shipment</a>
+        </article>
+      </div>
+      <div class="col-12 col-md-4 mb-4">
+        <article class="office-address h-100">
+          <h3>Explore services</h3>
+          <p>Review available freight options and contact the team to confirm what is supported for your route.</p>
+          <a class="btn btn-primary" href="services.php">View services</a>
+        </article>
+      </div>
+    </div>
+  </div>
+</section>
 <?php
     require_once('footer.php')
 ?>
