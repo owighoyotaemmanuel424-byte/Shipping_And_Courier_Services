@@ -1,21 +1,24 @@
+<?php
+$footerPagePrefix = strpos($_SERVER['SCRIPT_NAME'] ?? '', '/views/') !== false ? '' : 'views/';
+?>
 <section class="footer-widget-section">
 	<div class="container">
 		<div class="row">
 			<div class="col-sm-4">
 				<div class="footer-widget">
 					<h3>About</h3>
-					<p>NEXTGEN Logiistics is a representative logistics operator providing full range of service in the sphere of customs cargo and
+					<p>NEXTGEN Logistics is a representative logistics operator providing full range of service in the sphere of customs cargo and
 					transportation worldwide.
 					</p>
 					<br>
 
 					<address>
-						<strong>+1 (661) 769-6-179</strong>
+						<strong>Customer support</strong>
 						<br>
-						<a href="#">customerservice@nextgen.com</a>
+						<a href="<?php echo $footerPagePrefix; ?>contact.php">Contact our team</a>
 						<br>
 						<br>
-						<span class="map-marker">384 Maple Circle<br>Simi Valley Nevada, 24757</span>
+						<span class="map-marker">Pickup and delivery coverage depends on your route.</span>
 					</address>
 
 					
@@ -28,9 +31,9 @@
 					<div class="row">
 						<div class="col-sm-6">
 							<ul class="quick-links">
-								<li><a href="about.php">About us</a></li>
-								<li><a href="#blog.html">Blog</a></li>
-								<li><a href="contact.php">Contact</a></li>
+								<li><a href="<?php echo $footerPagePrefix; ?>about.php">About us</a></li>
+								<li><a href="<?php echo $footerPagePrefix; ?>tracking.php">Track a shipment</a></li>
+								<li><a href="<?php echo $footerPagePrefix; ?>contact.php">Contact</a></li>
 								<li><a href="#">Career</a></li>
 								<li><a href="#">Staffs</a></li>
 								<li><a href="#">News</a></li>
@@ -39,11 +42,11 @@
 						</div>
 						<div class="col-sm-6">
 							<ul class="quick-links">
-								<li><a href="#forum.html">Forum</a></li>
-								<li><a href="#schedules.html">Schedules</a></li>
-								<li><a href="#projects.html">Projects</a></li>
-								<li><a href="#partners.html">Partners</a></li>
-								<li><a href="#cargo.html">Cargo</a></li>
+								<li><a href="<?php echo $footerPagePrefix; ?>services.php">Our services</a></li>
+								<li><a href="<?php echo $footerPagePrefix; ?>quotation.php">Request a quote</a></li>
+								<li><a href="<?php echo $footerPagePrefix; ?>contact.php">Customer support</a></li>
+								<li><a href="<?php echo $footerPagePrefix; ?>about.php">Why NEXTGEN</a></li>
+								<li><a href="<?php echo $footerPagePrefix; ?>services.php">Freight services</a></li>
 							</ul>
 						</div>
 					</div>
@@ -84,7 +87,7 @@
     </div>
 
     <div class="copyright-info">
-      <span>Copyright © 2021 NEXTGEN. All Rights Reserved. Designed by <a href="#">Happi</a><br></span>
+      <span>Copyright © <?php echo date("Y"); ?> NEXTGEN Logistics. All rights reserved.<br></span>
     </div>
   </div><!-- /.container -->
 </footer>
