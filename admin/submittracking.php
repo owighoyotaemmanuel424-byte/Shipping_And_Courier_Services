@@ -46,7 +46,7 @@ if (!in_array($data[3], ['Air Freight', 'Marine Freight', 'Land Freight'], true)
     header('Location: add-tracking.php');
     exit();
 }
-if (!preg_match('/^\\d{4}-\\d{2}-\\d{2}$/', $data[5]) || !preg_match('/^\\d{4}-\\d{2}-\\d{2}$/', $data[6]) || !checkdate((int)substr($data[5], 5, 2), (int)substr($data[5], 8, 2), (int)substr($data[5], 0, 4)) || !checkdate((int)substr($data[6], 5, 2), (int)substr($data[6], 8, 2), (int)substr($data[6], 0, 4))) {
+if (!preg_match('/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/', $data[5]) || !preg_match('/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/', $data[6]) || !checkdate((int)substr($data[5], 5, 2), (int)substr($data[5], 8, 2), (int)substr($data[5], 0, 4)) || !checkdate((int)substr($data[6], 5, 2), (int)substr($data[6], 8, 2), (int)substr($data[6], 0, 4))) {
     $_SESSION['ERRMSG_ARR'] = ['Enter valid shipment and delivery dates.'];
     mysqli_close($db);
     header('Location: add-tracking.php');
