@@ -1,13 +1,6 @@
 <?php
-if (session_status() !== PHP_SESSION_ACTIVE) {
-    $isHttps = !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off';
-    session_set_cookie_params(['httponly' => true, 'secure' => $isHttps, 'samesite' => 'Lax', 'path' => '/']);
-    session_start();
-}
-if (empty($_SESSION['userId'])) {
-    header('Location: index.php');
-    exit();
-}
+require_once __DIR__ . '/session.php';
+
 if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !isset($_POST['submit']) || empty($_SESSION['csrf_token']) || !hash_equals($_SESSION['csrf_token'], (string)($_POST['csrf_token'] ?? ''))) {
     header('Location: dashboard.php');
     exit();
