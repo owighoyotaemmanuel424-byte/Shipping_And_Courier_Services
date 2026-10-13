@@ -52,3 +52,7 @@ if (!$admin) {
     exit();
 }
 $login_session = $admin['username'];
+if (empty($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+
