@@ -1,57 +1,76 @@
 <?php
-    if(isset($_POST['submit'])){
-        require_once('../database/config.php');
-        require_once('../controllers/controllers.php');
+if (session_status() !== PHP_SESSION_ACTIVE) {
+    session_start();
+}
+if (empty($_SESSION['userId'])) {
+    header('Location: index.php');
+    exit();
+}
+if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !isset($_POST['submit'])) {
+    header('Location: dashboard.php');
+    exit();
+}
+require_once __DIR__ . '/../database/config.php';
 
-        $db_login = mysqli_connect(DB_HOST, DB_USER, DB_PASSWORD, DB_DATABASE);
-        $id = $_POST['id'];
-        $fname = $_POST['firstname'];
-        $lname = $_POST['lastname'];
-        $trackingNumber = $_POST['tracknum'];
-        $shipmentType = $_POST['shipmentType'];
-        $content = $_POST['content'];
-        $shipmentDate = $_POST['sdate'];
-        $deliveryDate = $_POST['ddate'];
-        $sourceCity = $_POST['scity'];
-        $sourceState = $_POST['sstate'];
-        $sourceZip = $_POST['szip'];
-        $currentCity = $_POST['ccity'];
-        $currentState = $_POST['cstate'];
-        $currentZip = $_POST['czip'];
-        $destinationCity = $_POST['dcity'];
-        $destinationState = $_POST['dstate'];
-        $destinationZip = $_POST['dzip'];
-        $contactNumber = $_POST['contactnumber'];
-        $status = $_POST['status'];
+$id = filter_var($_POST['id'] ?? null, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
+if (!$id) {
+    header('Location: dashboard.php');
+    exit();
+}
+$db = mysqli_connect(DB_HOST, DB_USER, DB_PASSWORD, DB_DATABASE, DB_PORT);
+if (!$db) {
+    error_log('Update shipment database connection failed: ' . mysqli_connect_error());
+    $_SESSION['ERRMSG_ARR'] = ['Unable to update shipment right now. Please try again.'];
+    header('Location: dashboard.php');
+    exit();
+}
+mysqli_set_charset($db, 'utf8mb4');
 
-        $query = "UPDATE tracking SET 
-        id= $id,
-        first_name ='$fname',
-        last_name ='$lname',
-        tracking_number ='$trackingNumber',
-        shipment_type ='$shipmentType',
-        content ='$content',
-        shipment_date ='$shipmentDate',
-        delivery_date ='$deliveryDate',
-        source_city ='$sourceCity',
-        source_state ='$sourceState',
-        source_zip ='$sourceZip',
-        current_city ='$currentCity',
-        current_state ='$currentState',
-        current_zip ='$currentZip',
-        destination_city ='$destinationCity',
-        destination_state ='$destinationState',
-        destination_zip ='$destinationZip',
-        contact_number ='$contactNumber',
-        parcel_status ='$status'";
-
-        $insert = mysqli_query($db_login, $query);
-
-        if(!$insert){
-            die("Connection failed: " . mysqli_connect_error());
-        }else {
-            header("Location: ./dashboard.php"); 
-            echo "<p>Update Successful</p>";
-        }
+$fields = [
+    'firstname' => 190, 'lastname' => 190, 'tracknum' => 100,
+    'shipmentType' => 100, 'content' => 2000, 'sdate' => 30, 'ddate' => 30,
+    'scity' => 190, 'sstate' => 190, 'szip' => 40, 'ccity' => 190, 'cstate' => 190,
+    'czip' => 40, 'dcity' => 190, 'dstate' => 190, 'dzip' => 40,
+    'contactnumber' => 60, 'status' => 100
+];
+$data = [];
+foreach ($fields as $key => $maxLength) {
+    $value = trim((string)($_POST[$key] ?? ''));
+    if ($value === '' || strlen($value) > $maxLength) {
+        $_SESSION['ERRMSG_ARR'] = ['Please complete all shipment fields using valid values.'];
+        mysqli_close($db);
+        header('Location: edit.php?id=' . $id);
+        exit();
     }
-?>
+    $data[] = $value;
+}
+if (!preg_match('/^[A-Za-z0-9_-]+$/', $data[2])) {
+    $_SESSION['ERRMSG_ARR'] = ['Tracking numbers may contain only letters, numbers, hyphens, and underscores.'];
+    mysqli_close($db);
+    header('Location: edit.php?id=' . $id);
+    exit();
+}
+$sql = 'UPDATE tracking SET first_name=?,last_name=?,tracking_number=?,shipment_type=?,content=?,shipment_date=?,delivery_date=?,source_city=?,source_state=?,source_zip=?,current_city=?,current_state=?,current_zip=?,destination_city=?,destination_state=?,destination_zip=?,contact_number=?,parcel_status=? WHERE id=?';
+$stmt = mysqli_prepare($db, $sql);
+if (!$stmt) {
+    error_log('Update shipment query preparation failed: ' . mysqli_error($db));
+    mysqli_close($db);
+    $_SESSION['ERRMSG_ARR'] = ['Unable to update shipment right now. Please try again.'];
+    header('Location: edit.php?id=' . $id);
+    exit();
+}
+$types = 'ssssssssssssssssssi';
+mysqli_stmt_bind_param($stmt, $types, $data[0], $data[1], $data[2], $data[3], $data[4], $data[5], $data[6], $data[7], $data[8], $data[9], $data[10], $data[11], $data[12], $data[13], $data[14], $data[15], $data[16], $data[17], $id);
+if (!mysqli_stmt_execute($stmt)) {
+    $duplicate = mysqli_stmt_errno($stmt) === 1062;
+    error_log('Update shipment failed with database error ' . mysqli_stmt_errno($stmt));
+    mysqli_stmt_close($stmt);
+    mysqli_close($db);
+    $_SESSION['ERRMSG_ARR'] = [$duplicate ? 'That tracking number already exists. Please use a unique number.' : 'Unable to update shipment right now. Please try again.'];
+    header('Location: edit.php?id=' . $id);
+    exit();
+}
+mysqli_stmt_close($stmt);
+mysqli_close($db);
+header('Location: dashboard.php');
+exit();
