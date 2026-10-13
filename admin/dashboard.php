@@ -31,7 +31,7 @@
                 <p>
                   <?php
                       if($_SESSION['username']){
-                         echo 'Welcome ' . $_SESSION['username'] . ' Click here to <a href="logout.php" title="logout">
+                         echo 'Welcome ' . htmlspecialchars((string)$_SESSION['username'], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . ' Click here to <a href="logout.php" title="logout">
                         Logout</a>';
                       } else echo "<h1>Please login first .</h1>";
                       ?>
@@ -40,7 +40,9 @@
                   <?php
                     require_once('../database/config.php');
                     function get_track_details(){
-                      $conn = mysqli_connect(DB_HOST, DB_USER, DB_PASSWORD, DB_DATABASE);
+                      $conn = mysqli_connect(DB_HOST, DB_USER, DB_PASSWORD, DB_DATABASE, DB_PORT);
+                      if (!$conn) { error_log('Dashboard database connection failed: ' . mysqli_connect_error()); return []; }
+                      mysqli_set_charset($conn, 'utf8mb4');
                       $query = "SELECT * FROM tracking";
                       $result = mysqli_query($conn, $query);
                       $allParcelList = array();
@@ -87,13 +89,13 @@
                                     $status = $ap['parcel_status'];  
                               ?>
                               <tr class="boldder">
-                                <td><?php echo $num; ?></td>
-                                <td><?php echo $receiver; ?></td>
-                                <td><?php echo $content; ?></td>
-                                <td><?php echo $phone; ?></td>
-                                <td><?php echo $status; ?></td>
+                                <td><?php echo htmlspecialchars((string)$num, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?></td>
+                                <td><?php echo htmlspecialchars((string)$receiver, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?></td>
+                                <td><?php echo htmlspecialchars((string)$content, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?></td>
+                                <td><?php echo htmlspecialchars((string)$phone, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?></td>
+                                <td><?php echo htmlspecialchars((string)$status, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?></td>
                                 <td><a href="./edit.php?id=<?php echo $id; ?>">Edit</a></td>
-                                <td><a href="./delete.php?id=<?php echo $id; ?>">Delete</a></td>
+                                <td><form method="POST" action="./delete.php" onsubmit="return confirm(\'Delete this shipment? This cannot be undone.\');"><input type="hidden" name="id" value="<?php echo (int)$id; ?>"><input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION[\'csrf_token\'], ENT_QUOTES, \'UTF-8\'); ?>"><button type="submit" class="btn btn-danger btn-sm">Delete</button></form></td>
                               </tr>
                               <?php 
                               } ?>
