@@ -116,7 +116,7 @@ if (empty($_SESSION['USER_NUM'])) {
                 <td>Shipment Type</td>
                 <td><?php echo tracking_escape($ship_type); ?></td>
               </tr>
-              <t class="boldder"r>
+              <tr class="boldder">
                 <td>Parcel Content</td>
                 <td><?php echo tracking_escape($content); ?></td>
               </tr>
