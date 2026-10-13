@@ -35,17 +35,17 @@
                     <div class="col-12 col-md-6 mb-3">
                       <input type="hidden" name="id" value="<?php echo (int)$id; ?>">
                       <label for="validationDefault01">First name</label>
-                      <input type="text" name ="firstname" class="form-control" id="validationDefault01" value="<?php echo $r_firstname; ?>" required>
+                      <input type="text" name ="firstname" class="form-control" id="validationDefault01" value="<?php echo htmlspecialchars((string)$1, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?>" required>
                     </div>
                     <div class="col-12 col-md-6 mb-3">
                       <label for="validationDefault02">Last name</label>
-                      <input type="text" name ="lastname" class="form-control" id="validationDefault02" value="<?php echo $r_lastname; ?>" required>
+                      <input type="text" name ="lastname" class="form-control" id="validationDefault02" value="<?php echo htmlspecialchars((string)$1, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?>" required>
                     </div>
                   </div>
                   <div class="form-row">
                     <div class="col-12 col-md-6 mb-3">
                       <label for="validationDefault01">Tracking Number</label>
-                      <input type="text" name ="tracknum" class="form-control" id="validationDefault01" value="<?php echo $num; ?>" required>
+                      <input type="text" name ="tracknum" class="form-control" id="validationDefault01" value="<?php echo htmlspecialchars((string)$1, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?>" required>
                     </div>
                     <div class="col-12 col-md-6 mb-3">
                       <label class="mr-sm-2" for="inlineFormCustomSelect">Shipment Type</label>
@@ -59,64 +59,64 @@
                   </div>
                   <div class="form-row">
                     <label for="exampleFormControlTextarea1">Parcel Content</label>
-                    <textarea class="form-control" name ="content" id="exampleFormControlTextarea1" rows="3"><?php echo $content; ?></textarea>
+                    <textarea class="form-control" name ="content" id="exampleFormControlTextarea1" rows="3"><?php echo htmlspecialchars((string)$1, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?></textarea>
                   </div>
                   <div class="form-row">
                     <div class="col-12 col-md-6 mb-3">
                       <label for="validationDefault01">Shipped Date</label>
-                      <input type="date" name ="sdate" value ="<?php echo $shipdate; ?>" class="form-control" required>
+                      <input type="date" name ="sdate" value ="<?php echo htmlspecialchars((string)$1, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?>" class="form-control" required>
                     </div>
                     <div class="col-12 col-md-6 mb-3">
                       <label for="validationDefault02">Expected Delivery Date</label>
-                      <input type="date" name ="ddate" value ="<?php echo $estimate_date; ?>" class="form-control" required>
+                      <input type="date" name ="ddate" value ="<?php echo htmlspecialchars((string)$1, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?>" class="form-control" required>
                     </div>
                   </div>
                   <div class="form-row">
                     <div class="col-md-6 mb-3">
                       <label for="validationDefault03">Source City</label>
-                      <input type="text" name ="scity" class="form-control" id="validationDefault03" value="<?php echo $source_city; ?>" required>
+                      <input type="text" name ="scity" class="form-control" id="validationDefault03" value="<?php echo htmlspecialchars((string)$1, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?>" required>
                     </div>
                     <div class="col-md-3 mb-3">
                       <label for="validationDefault04">Source State</label>
-                      <input type="text" name ="sstate" class="form-control" id="validationDefault04" value="<?php echo $source_state; ?>" required>
+                      <input type="text" name ="sstate" class="form-control" id="validationDefault04" value="<?php echo htmlspecialchars((string)$1, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?>" required>
                     </div>
                     <div class="col-md-3 mb-3">
                       <label for="validationDefault05">Source Country</label>
-                      <input type="text" name ="szip" class="form-control" id="validationDefault05" value="<?php echo $source_country; ?>">
+                      <input type="text" name ="szip" class="form-control" id="validationDefault05" value="<?php echo htmlspecialchars((string)$1, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?>">
                     </div>
                   </div>
                   <div class="form-row">
                     <div class="col-md-6 mb-3">
                       <label for="validationDefault03">Current City</label>
-                      <input type="text" name ="ccity" class="form-control" id="validationDefault03" value="<?php echo $current_city; ?>" required>
+                      <input type="text" name ="ccity" class="form-control" id="validationDefault03" value="<?php echo htmlspecialchars((string)$1, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?>" required>
                     </div>
                     <div class="col-md-3 mb-3">
                       <label for="validationDefault04">Current State</label>
-                      <input type="text" name ="cstate" class="form-control" id="validationDefault04" value="<?php echo $current_state; ?>" required>
+                      <input type="text" name ="cstate" class="form-control" id="validationDefault04" value="<?php echo htmlspecialchars((string)$1, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?>" required>
                     </div>
                     <div class="col-md-3 mb-3">
                       <label for="validationDefault05">Current Country</label>
-                      <input type="text" name ="czip" class="form-control" id="validationDefault05" value="<?php echo $current_country; ?>">
+                      <input type="text" name ="czip" class="form-control" id="validationDefault05" value="<?php echo htmlspecialchars((string)$1, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?>">
                     </div>
                   </div>
                   <div class="form-row">
                     <div class="col-md-6 mb-3">
                       <label for="validationDefault03">Destination City</label>
-                      <input type="text" name ="dcity" class="form-control" id="validationDefault03" value="<?php echo $destination_city; ?>" required>
+                      <input type="text" name ="dcity" class="form-control" id="validationDefault03" value="<?php echo htmlspecialchars((string)$1, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?>" required>
                     </div>
                     <div class="col-md-3 mb-3">
                       <label for="validationDefault04">Destination State</label>
-                      <input type="text" name ="dstate" class="form-control" id="validationDefault04" value="<?php echo $destination_state; ?>" required>
+                      <input type="text" name ="dstate" class="form-control" id="validationDefault04" value="<?php echo htmlspecialchars((string)$1, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?>" required>
                     </div>
                     <div class="col-md-3 mb-3">
                       <label for="validationDefault05">Destination Country</label>
-                      <input type="text" name ="dzip" class="form-control" id="validationDefault05" value="<?php echo $destination_country; ?>">
+                      <input type="text" name ="dzip" class="form-control" id="validationDefault05" value="<?php echo htmlspecialchars((string)$1, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?>">
                     </div>
                   </div>
                   <div class="form-row">
                     <div class="col-12 col-md-6 mb-3">
                       <label>Contact Number</label>
-                      <input type="text" name ="contactnumber" value="<?php echo $phone; ?>" class="form-control" required>
+                      <input type="text" name ="contactnumber" value="<?php echo htmlspecialchars((string)$1, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?>" class="form-control" required>
                     </div>
                     <div class="col-12 col-md-6 mb-3">
                     <label class="mr-sm-2">Parcel Status</label>
