@@ -1,6 +1,16 @@
 <?php
+if (session_status() !== PHP_SESSION_ACTIVE) {
+    $isHttps = !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off';
+    session_set_cookie_params(['httponly' => true, 'secure' => $isHttps, 'samesite' => 'Lax', 'path' => '/']);
+    session_start();
+}
+if (empty($_SESSION['quote_csrf_token'])) {
+    $_SESSION['quote_csrf_token'] = bin2hex(random_bytes(32));
+}
 $quoteStatus = '';
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit']) &&
+    isset($_POST['csrf_token']) && is_string($_POST['csrf_token']) &&
+    hash_equals($_SESSION['quote_csrf_token'], $_POST['csrf_token'])) {
     $fields = [
         'firstname' => 'First name', 'lastname' => 'Last name', 'email' => 'Email',
         'contactnumber' => 'Contact number', 'paddress' => 'Pickup address',
@@ -42,6 +52,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
         }
     }
 }
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit']) &&
+    (!isset($_POST['csrf_token']) || !is_string($_POST['csrf_token']) ||
+    !hash_equals($_SESSION['quote_csrf_token'], $_POST['csrf_token']))) {
+    $quoteStatus = 'Your session could not be verified. Please reload the page and try again.';
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -81,6 +96,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
     <?php if ($quoteStatus !== '') : ?><div class="alert alert-info" role="status"><?php echo htmlspecialchars($quoteStatus, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?></div><?php endif; ?>
     <div class="">
     <form method="POST" action="quotation.php">
+      <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['quote_csrf_token'], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?>">
       <div class="form-row">
         <div class="col-12 col-md-6 mb-3">
           <label for="validationDefault01">First name</label>
