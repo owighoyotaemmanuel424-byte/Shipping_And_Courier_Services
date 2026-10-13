@@ -27,7 +27,7 @@
 			<div class="collapse navbar-collapse" id="nvbCollapse">
 				<ul class="navbar-nav ml-auto">
 					<li class="nav-item active pl-1">
-						<a class="nav-link" href="../index.php"><i class="fa fa-home fa-fw mr-1"></i>Home</a>
+						<a class="nav-link" href="index.php"><i class="fa fa-home fa-fw mr-1"></i>Home</a>
 					</li>
 					<li class="nav-item pl-1">
 						<a class="nav-link" href="views/services.php"><i class="fa fa-th-list fa-fw mr-1"></i>Services</a>

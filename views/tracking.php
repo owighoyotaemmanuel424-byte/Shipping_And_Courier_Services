@@ -1,5 +1,9 @@
 <?php
-    session_start();
+    if (session_status() !== PHP_SESSION_ACTIVE) {
+        $isHttps = !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off';
+        session_set_cookie_params(['httponly' => true, 'secure' => $isHttps, 'samesite' => 'Lax', 'path' => '/']);
+        session_start();
+    }
     unset($_SESSION['SESS_MEMBER_ID']);
 ?>
 <!DOCTYPE html>
@@ -40,7 +44,7 @@
             if(isset($_SESSION['ERRMSG_ARR']) && is_array($_SESSION['ERRMSG_ARR']) && count($_SESSION['ERRMSG_ARR']) >0 ){
                 echo '<p class="alert-danger">' ;
                     foreach($_SESSION['ERRMSG_ARR'] as $msg) {
-                        echo $msg;
+                        echo htmlspecialchars((string)$msg, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
                     }
                 echo '</p>';
                 unset($_SESSION['ERRMSG_ARR']);
@@ -50,7 +54,7 @@
     <div class="w-100 tracking-form mx-auto border">
         <h3 class="text-center my-4">Enter Tracking Number</h3> <br />
         <form action="../controllers/tracking_exec.php" method="POST" name="tracking" class="form-inline d-flex justify-content-center mb-4">
-            <input type="text" class="form-control mb-2 mr-sm-2" name ="trackingnumber" id="inlineFormInputName2" placeholder="001234567" required>
+            <input type="text" maxlength="100" pattern="[A-Za-z0-9_-]+" autocomplete="off" class="form-control mb-2 mr-sm-2" name ="trackingnumber" id="inlineFormInputName2" placeholder="001234567" required>
             <button type="submit" class="btn btn-primary mb-2">Track</button>
         </form>
     </div>
