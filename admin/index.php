@@ -32,10 +32,10 @@
                                     </div>
                                     <p>
                                         <?php
-                                            if(isset($_SESSION['ERRMSG_ARR']) && is_array($_SESSION['ERRMSG_ARR']) && count('ERRMSG_ARR') >0 ){
+                                            if(isset($_SESSION['ERRMSG_ARR']) && is_array($_SESSION['ERRMSG_ARR']) && count($_SESSION['ERRMSG_ARR']) > 0 ){
                                                 echo '<p class="alert-danger">' ;
                                                     foreach($_SESSION['ERRMSG_ARR'] as $msg) {
-                                                        echo $msg;
+                                                        echo htmlspecialchars((string)$msg, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
                                                     }
                                                 echo '</p>';
                                                 unset($_SESSION['ERRMSG_ARR']);
