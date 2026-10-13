@@ -6,7 +6,7 @@ if (empty($_SESSION['userId'])) {
     header('Location: index.php');
     exit();
 }
-if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !isset($_POST['submit'])) {
+if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !isset($_POST['submit']) || empty($_SESSION['csrf_token']) || !hash_equals($_SESSION['csrf_token'], (string)($_POST['csrf_token'] ?? ''))) {
     header('Location: dashboard.php');
     exit();
 }
