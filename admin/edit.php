@@ -33,7 +33,7 @@
                 <form method="POST" action="./update.php"><input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token'], ENT_QUOTES, 'UTF-8'); ?>">
                   <div class="form-row">
                     <div class="col-12 col-md-6 mb-3">
-                      <input type="hidden" name="id" value="<?php echo $id; ?>">
+                      <input type="hidden" name="id" value="<?php echo (int)$id; ?>">
                       <label for="validationDefault01">First name</label>
                       <input type="text" name ="firstname" class="form-control" id="validationDefault01" value="<?php echo $r_firstname; ?>" required>
                     </div>
