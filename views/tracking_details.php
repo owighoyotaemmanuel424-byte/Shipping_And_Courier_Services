@@ -144,7 +144,7 @@ if (empty($_SESSION['USER_NUM'])) {
                     if(isset($_SESSION['ERRMSG_ARR']) && is_array($_SESSION['ERRMSG_ARR']) && count($_SESSION['ERRMSG_ARR']) >0 ){
                         echo '<p class="alert-danger">' ;
                             foreach($_SESSION['ERRMSG_ARR'] as $msg) {
-                                echo $msg;
+                                echo tracking_escape($msg);
                             }
                         echo '</p>';
                         unset($_SESSION['ERRMSG_ARR']);
