@@ -17,16 +17,36 @@ foreach ($fields as $key=>$max) {
 $dateValid=static fn(string $date): bool => preg_match('/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/',$date)===1 && checkdate((int)substr($date,5,2),(int)substr($date,8,2),(int)substr($date,0,4));
 if (!in_array($data[3],['Air Freight','Marine Freight','Land Freight'],true) || !in_array($data[17],['Shipped','Delivered','Transit','Packaging','Missing Parcel'],true)) { $_SESSION['ERRMSG_ARR']=['Choose a valid shipment type and parcel status.']; header('Location: '.$redirect); exit(); }
 if (!$dateValid($data[5]) || !$dateValid($data[6]) || strcmp($data[6],$data[5])<0) { $_SESSION['ERRMSG_ARR']=['Enter valid dates. Delivery date cannot be earlier than shipment date.']; header('Location: '.$redirect); exit(); }
-if (!preg_match('/^[A-Za-z0-9_-]+$/',$data[2])) { $_SESSION['ERRMSG_ARR']=['Tracking numbers may contain only letters, numbers, hyphens, and underscores.']; header('Location: '.$redirect); exit(); }
-$sql='UPDATE tracking SET first_name=?,last_name=?,tracking_number=?,shipment_type=?,content=?,shipment_date=?,delivery_date=?,source_city=?,source_state=?,source_zip=?,current_city=?,current_state=?,current_zip=?,destination_city=?,destination_state=?,destination_zip=?,contact_number=?,parcel_status=? WHERE id=?';
-$data[]=(int)$id;
-try { app_db()->prepare($sql)->execute($data); }
-catch (PDOException $exception) {
+try {
+    $db=app_db();
+    $existing=$db->prepare('SELECT tracking_number FROM tracking WHERE id=? LIMIT 1');
+    $existing->execute([(int)$id]);
+    $currentTrackingNumber=$existing->fetchColumn();
+    if (!is_string($currentTrackingNumber) || $currentTrackingNumber==='') {
+        $_SESSION['ERRMSG_ARR']=['This shipment no longer exists. Refresh the dashboard and try again.'];
+        header('Location: dashboard.php'); exit();
+    }
+    // Tracking IDs are generated at creation and cannot be changed by editing or forged POST data.
+    $data[2]=$currentTrackingNumber;
+    $sql='UPDATE tracking SET first_name=?,last_name=?,tracking_number=?,shipment_type=?,content=?,shipment_date=?,delivery_date=?,source_city=?,source_state=?,source_zip=?,current_city=?,current_state=?,current_zip=?,destination_city=?,destination_state=?,destination_zip=?,contact_number=?,parcel_status=?,updated_at=CURRENT_TIMESTAMP WHERE id=?';
+    $data[]=(int)$id;
+    $stmt=$db->prepare($sql);
+    $stmt->execute($data);
+    if ($stmt->rowCount()===0) {
+        $check=$db->prepare('SELECT 1 FROM tracking WHERE id=? LIMIT 1');
+        $check->execute([(int)$id]);
+        if (!$check->fetchColumn()) {
+            $_SESSION['ERRMSG_ARR']=['This shipment no longer exists. Refresh the dashboard and try again.'];
+            header('Location: dashboard.php'); exit();
+        }
+    }
+} catch (PDOException $exception) {
     error_log('Update shipment failed: '.$exception->getMessage());
-    $_SESSION['ERRMSG_ARR']=[str_contains(strtolower($exception->getMessage()),'unique') ? 'That tracking number already exists. Please use a unique number.' : 'Unable to update shipment right now. Please try again.'];
+    $_SESSION['ERRMSG_ARR']=['Unable to update shipment right now. Please try again.'];
     header('Location: '.$redirect); exit();
 } catch (Throwable $exception) {
     error_log('Update shipment failed: '.$exception->getMessage());
     $_SESSION['ERRMSG_ARR']=['Unable to update shipment right now. Please try again.']; header('Location: '.$redirect); exit();
 }
+$_SESSION['SUCCESSMSG']='Shipment details updated successfully.';
 header('Location: dashboard.php'); exit();
