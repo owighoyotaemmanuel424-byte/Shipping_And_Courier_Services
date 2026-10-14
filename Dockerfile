@@ -6,7 +6,7 @@ RUN install-php-extensions mysqli pdo_mysql
 WORKDIR /app
 COPY . /app/
 
-# Serve the repository root because index.php and admin-setup.php live there.
-COPY Caddyfile /etc/caddy/Caddyfile
+# FrankenPHP reads its application Caddyfile from this directory.
+COPY Caddyfile /etc/frankenphp/Caddyfile
 
 EXPOSE 8080
