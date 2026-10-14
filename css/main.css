@@ -718,3 +718,23 @@ section:not(.page-title-secttion) { scroll-margin-top: 90px; }
   html { scroll-behavior: auto; }
   *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; }
 }
+
+/* Customer shipment progress */
+.tracking-progress-card{height:100%;padding:clamp(20px,3vw,30px);border:1px solid #e4eaf2;border-radius:18px;background:linear-gradient(160deg,#fff 0%,#f8fbff 100%);box-shadow:0 12px 35px rgba(23,48,83,.07);margin:0 0 28px;color:#192b45}
+.tracking-progress-kicker{font-size:11px;font-weight:800;letter-spacing:.13em;color:#2874c8;margin:0 0 9px}
+.tracking-progress-card h3{font-size:24px;font-weight:800;letter-spacing:-.03em;margin:0 0 8px;color:#172a44}
+.tracking-progress-number{font-size:13px;color:#718096;margin:0 0 24px;overflow-wrap:anywhere}.tracking-progress-number strong{color:#263b58}
+.tracking-timeline{list-style:none;margin:0;padding:0 0 8px}
+.tracking-timeline li{position:relative;display:flex;align-items:flex-start;gap:13px;min-height:70px;padding:0 0 18px}
+.tracking-timeline li:not(:last-child):before{content:"";position:absolute;left:15px;top:32px;bottom:0;width:2px;background:#e0e7f0}
+.tracking-timeline li.is-complete:not(:last-child):before{background:#2a9b70}
+.tracking-timeline-marker{z-index:1;display:flex;flex:0 0 32px;width:32px;height:32px;align-items:center;justify-content:center;border-radius:50%;border:2px solid #dce4ee;background:#fff;color:#8794a7;font-size:12px}
+.tracking-timeline li.is-complete .tracking-timeline-marker{border-color:#2a9b70;background:#e8f8f0;color:#187b54}
+.tracking-timeline li.is-current .tracking-timeline-marker{box-shadow:0 0 0 5px rgba(42,155,112,.12)}
+.tracking-timeline-copy{display:flex;flex:1;flex-direction:column;gap:4px;padding-top:1px}.tracking-timeline-copy strong{font-size:14px;color:#273a54}.tracking-timeline-copy span{font-size:12px;line-height:1.5;color:#8290a3}
+.tracking-current-badge{border-radius:30px;background:#e8f8f0;color:#187b54;font-size:10px;font-weight:800;padding:5px 8px;white-space:nowrap}
+.tracking-route-summary{display:flex;align-items:center;justify-content:space-between;gap:12px;border-top:1px solid #e7edf4;border-bottom:1px solid #e7edf4;padding:19px 0;margin-top:4px}
+.tracking-route-summary>div{display:flex;min-width:0;flex-direction:column;gap:5px}.tracking-route-summary>div:last-child{text-align:right}.tracking-route-summary>i{color:#7b8da6;flex:0 0 auto}.tracking-route-summary span,.tracking-delivery-date span{font-size:10px;font-weight:800;letter-spacing:.1em;color:#8b98aa}.tracking-route-summary strong{font-size:14px;color:#263b58;overflow-wrap:anywhere}.tracking-route-summary small{font-size:11px;color:#8290a3;overflow-wrap:anywhere}
+.tracking-delivery-date{display:flex;align-items:center;gap:12px;margin-top:18px;padding:14px;border-radius:12px;background:#edf5ff}.tracking-delivery-date>i{font-size:20px;color:#2874c8}.tracking-delivery-date div{display:flex;flex-direction:column;gap:4px}.tracking-delivery-date strong{font-size:14px;color:#263b58}
+.tracking-alert{display:flex;gap:13px;align-items:flex-start;padding:16px;border-radius:12px;background:#fff3e9;border:1px solid #ffd7ba;color:#9c4c16;margin-bottom:20px}.tracking-alert>i{font-size:19px;margin-top:2px}.tracking-alert strong{font-size:14px}.tracking-alert p{font-size:12px;line-height:1.6;margin:5px 0 0;color:#8d5c3b}
+@media(max-width:575px){.tracking-progress-card{padding:19px;border-radius:14px}.tracking-progress-card h3{font-size:21px}.tracking-current-badge{font-size:9px;padding:4px 6px}.tracking-route-summary{gap:8px}.tracking-route-summary strong{font-size:12px}}
