@@ -39,7 +39,7 @@
                   <div class="form-row">
                     <div class="col-12 col-md-6 mb-3">
                       <label for="validationDefault01">Tracking Number</label>
-                      <input type="text" name ="tracknum" class="form-control" id="validationDefault01" placeholder="123456789" required>
+                      <input type="text" name="tracknum" class="form-control" id="trackingNumberPreview" value="Generated when saved" readonly aria-describedby="trackingNumberHelp"><small id="trackingNumberHelp" class="form-text text-muted">A unique tracking ID is generated securely when you save this shipment.</small>
                     </div>
                     <div class="col-12 col-md-6 mb-3">
                       <label class="mr-sm-2" for="inlineFormCustomSelect">Shipment Type</label>
