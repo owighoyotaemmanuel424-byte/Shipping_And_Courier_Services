@@ -135,6 +135,5 @@
           </div>
       </div>
 <?php
-    include_once('submittracking.php');
     include_once('../views/footer.php');
 ?>
