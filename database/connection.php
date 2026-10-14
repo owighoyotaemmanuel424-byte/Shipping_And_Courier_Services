@@ -53,6 +53,12 @@ function app_db(): PDO
             created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
             updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
         )");
+        $pdo->exec("CREATE TABLE IF NOT EXISTS admin_login_attempts (
+            ip_hash TEXT PRIMARY KEY,
+            attempts INTEGER NOT NULL DEFAULT 0,
+            window_started_at INTEGER NOT NULL,
+            locked_until INTEGER NOT NULL DEFAULT 0
+        )");
         $pdo->exec('CREATE INDEX IF NOT EXISTS idx_tracking_status ON tracking(parcel_status)');
         $pdo->exec('CREATE INDEX IF NOT EXISTS idx_tracking_delivery_date ON tracking(delivery_date)');
         return $pdo;
