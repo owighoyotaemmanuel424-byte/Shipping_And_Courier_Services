@@ -68,7 +68,7 @@ if (empty($_SESSION['USER_NUM'])) {
 <section class="tracking-details-hero">
   <div class="tracking-details-hero-inner">
     <div><span class="tracking-eyebrow"><i class="fa-solid fa-location-dot" aria-hidden="true"></i> NEXTGEN SHIPMENT TRACKING</span><h1>Shipment overview</h1><p>Track your parcel's progress and review its recorded route details.</p></div>
-    <div class="tracking-details-id"><span>TRACKING NUMBER</span><strong><?php echo tracking_escape($num); ?></strong><a href="tracking.php"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i> Track another</a></div>
+    <div class="tracking-details-id"><span>TRACKING NUMBER</span><strong id="trackingNumberValue"><?php echo tracking_escape($num); ?></strong><div class="tracking-id-actions"><button type="button" id="copyTrackingNumber" class="tracking-copy-button" aria-label="Copy tracking number"><i class="fa-regular fa-copy" aria-hidden="true"></i> Copy ID</button><a href="tracking.php"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i> Track another</a></div><span id="trackingCopyFeedback" class="tracking-copy-feedback" role="status" aria-live="polite"></span></div>
   </div>
 </section>
 <div class="container mb-5 tracking-details-page">
@@ -137,6 +137,7 @@ if (empty($_SESSION['USER_NUM'])) {
           <p class="tracking-progress-kicker">LIVE SHIPMENT OVERVIEW</p>
           <h3 id="trackingProgressTitle">Delivery progress</h3>
           <p class="tracking-progress-number">Tracking ID: <strong><?php echo tracking_escape($num); ?></strong></p>
+          <div class="tracking-status-summary"><span class="tracking-status-indicator <?php echo $status === 'Delivered' ? 'is-delivered' : ($status === 'Missing Parcel' ? 'is-attention' : 'is-moving'); ?>"></span><div><span class="tracking-status-label">CURRENT STATUS</span><strong><?php echo tracking_escape($status); ?></strong></div><span class="tracking-status-updated"><i class="fa-regular fa-calendar" aria-hidden="true"></i> Updated <?php echo tracking_escape($shipdate); ?></span></div>
           <?php if ($status === 'Missing Parcel'): ?>
             <div class="tracking-alert" role="status"><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i><div><strong>Shipment requires attention</strong><p>Please contact customer support for the latest information about this parcel.</p></div></div>
           <?php else:
@@ -218,6 +219,32 @@ $mapSatelliteUrl = 'https://maps.google.com/maps?' . http_build_query(['saddr' =
       streetButton.classList.toggle('is-active', this === streetButton);
       satelliteButton.classList.toggle('is-active', this === satelliteButton);
     });
+  });
+})();
+</script>
+<script>
+(function(){
+  const button = document.getElementById('copyTrackingNumber');
+  const value = document.getElementById('trackingNumberValue');
+  const feedback = document.getElementById('trackingCopyFeedback');
+  if (!button || !value || !feedback) return;
+  button.addEventListener('click', async function(){
+    const text = value.textContent.trim();
+    try {
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(text);
+      } else {
+        const helper = document.createElement('textarea');
+        helper.value = text; helper.setAttribute('readonly','');
+        helper.style.position = 'fixed'; helper.style.opacity = '0';
+        document.body.appendChild(helper); helper.select();
+        const copied = document.execCommand('copy'); helper.remove();
+        if (!copied) throw new Error('Copy unavailable');
+      }
+      feedback.textContent = 'Tracking number copied.';
+    } catch (error) {
+      feedback.textContent = 'Please select and copy the tracking number above.';
+    }
   });
 })();
 </script>
