@@ -1,45 +1,42 @@
 <?php
-include('session.php');
+require_once __DIR__ . '/session.php';
 require_once __DIR__ . '/../database/connection.php';
-function get_track_details(): array {
-    try {
-        return app_db()->query('SELECT * FROM tracking ORDER BY id DESC')->fetchAll(PDO::FETCH_ASSOC);
-    } catch (Throwable $exception) {
-        error_log('Dashboard shipment query failed: '.$exception->getMessage());
-        return [];
-    }
+function admin_h($value): string { return htmlspecialchars((string)$value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); }
+$shipments = [];
+$loadError = false;
+try {
+    $shipments = app_db()->query('SELECT * FROM tracking ORDER BY id DESC')->fetchAll(PDO::FETCH_ASSOC);
+} catch (Throwable $exception) {
+    error_log('Dashboard shipment query failed: ' . $exception->getMessage());
+    $loadError = true;
+}
+$total = count($shipments);
+$delivered = 0; $inTransit = 0; $needsAttention = 0;
+foreach ($shipments as $shipment) {
+    $status = strtolower(trim((string)$shipment['parcel_status']));
+    if ($status === 'delivered') $delivered++;
+    elseif (in_array($status, ['transit','shipped'], true)) $inTransit++;
+    elseif (in_array($status, ['missing parcel'], true)) $needsAttention++;
 }
 ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="shortcut icon" href="assets/ico/favicon.png"><link href="../css/cssreset.css" rel="stylesheet"><link href="../css/bootstrap.css" rel="stylesheet"><link href="../css/main.css" rel="stylesheet">
-<script src="https://kit.fontawesome.com/cbdf2b0f0e.js" crossorigin="anonymous"></script><title>NEXTGEN - Logistics</title>
-</head>
-<body>
-<?php include_once('header.php'); ?>
-<div class="container border my-5"><div class="row">
-<?php include_once('./admin-sidebar.php'); ?>
-<div class="col-12 col-md-9">
-<h3>Admin Dashboard</h3>
-<p>Welcome <?php echo htmlspecialchars((string)$_SESSION['username'], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?>. <a href="logout.php" title="logout">Logout</a></p>
-<?php if (!empty($_SESSION['ERRMSG_ARR'])): ?><div class="alert alert-danger"><?php foreach ($_SESSION['ERRMSG_ARR'] as $msg) echo htmlspecialchars((string)$msg, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8').'<br>'; unset($_SESSION['ERRMSG_ARR']); ?></div><?php endif; ?>
-<div class="container mb-5"><div class="row"><div class="col-12">
-<h3 class="my-1">Parcel Information</h3><div class="table-responsive border"><table class="table table-hover">
-<thead><tr><th>Tracking Number</th><th>Receiver Name</th><th>Content</th><th>Contact Number</th><th>Status</th><th>Edit</th><th>Delete</th></tr></thead><tbody>
-<?php foreach (get_track_details() as $ap): $id=(int)$ap['id']; ?>
-<tr>
-<td><?php echo htmlspecialchars((string)$ap['tracking_number'], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?></td>
-<td><?php echo htmlspecialchars(trim((string)$ap['first_name'].' '.(string)$ap['last_name']), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?></td>
-<td><?php echo htmlspecialchars((string)$ap['content'], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?></td>
-<td><?php echo htmlspecialchars((string)$ap['contact_number'], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?></td>
-<td><?php echo htmlspecialchars((string)$ap['parcel_status'], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?></td>
-<td><a href="./edit.php?id=<?php echo $id; ?>">Edit</a></td>
-<td><form method="POST" action="./delete.php" onsubmit="return confirm('Delete this shipment? This cannot be undone.');"><input type="hidden" name="id" value="<?php echo $id; ?>"><input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token'], ENT_QUOTES, 'UTF-8'); ?>"><button type="submit" class="btn btn-danger btn-sm">Delete</button></form></td>
-</tr>
+<!doctype html><html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#f4f7fb"><title>Operations dashboard · NEXTGEN Logistics</title>
+<link rel="stylesheet" href="../css/bootstrap.css"><link rel="stylesheet" href="assets/admin.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head><body class="admin-app">
+<header class="admin-topbar"><div class="admin-topbar-left"><button class="admin-mobile-menu" id="menuToggle" aria-label="Open navigation" aria-expanded="false"><i class="fa-solid fa-bars"></i></button><a class="admin-brand" href="dashboard.php"><span class="admin-brand-mark"><i class="fa-solid fa-truck-fast"></i></span><span>NEXTGEN <span style="font-weight:500;color:#748198">Logistics</span></span></a></div><div class="admin-top-right"><span class="admin-live"><i class="fa-solid fa-circle-check"></i> Operations online</span><div class="admin-user" title="<?=admin_h($_SESSION['username'])?>"><?=admin_h(strtoupper(substr((string)$_SESSION['username'],0,1)))?></div><a class="admin-icon-btn" href="logout.php" title="Sign out" aria-label="Sign out"><i class="fa-solid fa-arrow-right-from-bracket"></i></a></div></header>
+<div class="admin-mobile-overlay" id="mobileOverlay"></div><div class="admin-layout">
+<aside class="admin-sidebar" id="adminSidebar"><div class="admin-side-label">WORKSPACE</div><a class="admin-side-link active" href="dashboard.php"><i class="fa-solid fa-chart-pie"></i> Overview</a><a class="admin-side-link" href="dashboard.php#shipments"><i class="fa-solid fa-box"></i> All shipments</a><a class="admin-side-link" href="add-tracking.php"><i class="fa-solid fa-circle-plus"></i> Create shipment</a><div class="admin-side-label" style="margin-top:25px">ACCOUNT</div><a class="admin-side-link" href="../index.php"><i class="fa-solid fa-globe"></i> View website</a><a class="admin-side-link" href="logout.php"><i class="fa-solid fa-arrow-right-from-bracket"></i> Sign out</a><div class="admin-side-bottom"><div class="admin-side-label">SIGNED IN AS</div><div style="padding:0 14px;font-size:13px;font-weight:750;overflow-wrap:anywhere"><?=admin_h($_SESSION['username'])?></div><div style="padding:5px 14px;font-size:11px;color:#8995a7">Administrator</div></div></aside>
+<main class="admin-main"><div class="admin-heading"><div><p class="admin-eyebrow">Operations centre</p><h1>Good to see you, <?=admin_h($_SESSION['username'])?></h1><p class="admin-subtitle">Here’s what’s happening with your shipments today.</p></div><a class="admin-btn" href="add-tracking.php"><i class="fa-solid fa-plus"></i> Create shipment</a></div>
+<?php if (!empty($_SESSION['ERRMSG_ARR']) && is_array($_SESSION['ERRMSG_ARR'])): ?><div class="admin-alert"><?php foreach($_SESSION['ERRMSG_ARR'] as $message) echo admin_h($message).'<br>'; unset($_SESSION['ERRMSG_ARR']); ?></div><?php endif; ?>
+<?php if ($loadError): ?><div class="admin-alert">Shipment records could not be loaded. Please check the database connection and try again.</div><?php endif; ?>
+<section class="admin-stats" aria-label="Shipment summary"><article class="admin-stat"><div class="admin-stat-top"><span>Total shipments</span><span class="admin-stat-icon"><i class="fa-solid fa-boxes-stacked"></i></span></div><div class="admin-stat-value"><?=number_format($total)?></div><div class="admin-stat-note">All records in your system</div></article><article class="admin-stat"><div class="admin-stat-top"><span>In transit</span><span class="admin-stat-icon" style="background:#fff4df;color:#bd7c0a"><i class="fa-solid fa-truck-fast"></i></span></div><div class="admin-stat-value"><?=number_format($inTransit)?></div><div class="admin-stat-note">Shipped or moving</div></article><article class="admin-stat"><div class="admin-stat-top"><span>Delivered</span><span class="admin-stat-icon" style="background:#e8f8ef;color:#16845a"><i class="fa-solid fa-circle-check"></i></span></div><div class="admin-stat-value"><?=number_format($delivered)?></div><div class="admin-stat-note">Successfully delivered</div></article><article class="admin-stat"><div class="admin-stat-top"><span>Needs attention</span><span class="admin-stat-icon" style="background:#fff0f0;color:#cc3b42"><i class="fa-solid fa-triangle-exclamation"></i></span></div><div class="admin-stat-value"><?=$needsAttention?></div><div class="admin-stat-note">Marked as missing parcel</div></article></section>
+<section class="admin-panel" id="shipments"><div class="admin-panel-head"><div><h2>Shipment management</h2><p>Search, review and update parcel records.</p></div><a class="admin-btn admin-btn-light" href="add-tracking.php"><i class="fa-solid fa-plus"></i> Add new</a></div><div class="admin-controls"><label class="admin-search"><i class="fa-solid fa-magnifying-glass"></i><input id="shipmentSearch" type="search" placeholder="Search tracking number, recipient, destination…" autocomplete="off" aria-label="Search shipments"></label><select id="statusFilter" class="admin-select" aria-label="Filter by status"><option value="">All statuses</option><option>Packaging</option><option>Shipped</option><option>Transit</option><option>Delivered</option><option>Missing Parcel</option></select><select id="typeFilter" class="admin-select" aria-label="Filter by shipment type"><option value="">All shipment types</option><option>Air Freight</option><option>Marine Freight</option><option>Land Freight</option></select></div><div class="admin-table-wrap"><table class="admin-table"><thead><tr><th>Tracking ID</th><th>Recipient</th><th>Route</th><th>Shipment type</th><th>Status</th><th>Delivery date</th><th>Actions</th></tr></thead><tbody id="shipmentRows">
+<?php foreach ($shipments as $shipment): $id=(int)$shipment['id']; $status=(string)$shipment['parcel_status']; $statusClass='status-'.strtolower(str_replace(' ','-',preg_replace('/[^A-Za-z ]/','',$status))); ?>
+<tr data-search="<?=admin_h(strtolower(implode(' ',[(string)$shipment['tracking_number'],(string)$shipment['first_name'],(string)$shipment['last_name'],(string)$shipment['destination_city'],(string)$shipment['destination_state'],(string)$shipment['destination_zip'],(string)$shipment['contact_number']]))?>" data-status="<?=admin_h($status)?>" data-type="<?=admin_h($shipment['shipment_type'])?>"><td><span class="admin-tracking"><?=admin_h($shipment['tracking_number'])?></span><div class="admin-secondary">#<?=$id?></div></td><td><div class="admin-person"><?=admin_h(trim($shipment['first_name'].' '.$shipment['last_name']))?></div><div class="admin-secondary"><?=admin_h($shipment['contact_number'])?></div></td><td><div class="admin-person"><?=admin_h($shipment['source_city'])?></div><div class="admin-secondary">to <?=admin_h($shipment['destination_city'])?>, <?=admin_h($shipment['destination_state'])?></div></td><td><?=admin_h($shipment['shipment_type'])?></td><td><span class="admin-status <?=$statusClass?>"><?=admin_h($status)?></span></td><td><?=admin_h($shipment['delivery_date'])?></td><td><div class="admin-actions"><a class="admin-icon-btn" href="edit.php?id=<?=$id?>" aria-label="Edit shipment <?=admin_h($shipment['tracking_number'])?>" title="Edit"><i class="fa-solid fa-pen"></i></a><form method="post" action="delete.php" onsubmit="return confirm('Delete shipment <?=admin_h($shipment['tracking_number'])?>? This cannot be undone.');"><input type="hidden" name="id" value="<?=$id?>"><input type="hidden" name="csrf_token" value="<?=admin_h($_SESSION['csrf_token'])?>"><button class="admin-icon-btn danger" type="submit" title="Delete" aria-label="Delete shipment"><i class="fa-solid fa-trash"></i></button></form></div></td></tr>
 <?php endforeach; ?>
-</tbody></table></div></div></div></div>
-</div></div></div>
-<?php include_once('../views/footer.php'); ?>
-</body></html>
+</tbody></table><?php if (!$shipments): ?><div class="admin-empty"><i class="fa-solid fa-box-open"></i><div style="font-weight:750;color:#35445b;margin-bottom:5px">No shipments yet</div><div>Create your first shipment to get started.</div><p style="margin-top:17px"><a class="admin-btn" href="add-tracking.php"><i class="fa-solid fa-plus"></i> Create shipment</a></p></div><?php endif; ?><div class="admin-empty" id="noMatches" hidden>No shipments match your search and filters.</div></div><div class="admin-footer"><span id="resultCount">Showing <?=$total?> shipment<?=$total===1?'':'s'?></span><span>Shipment records · NEXTGEN Logistics</span></div></section><p style="margin:22px 2px 0;color:#99a3b2;font-size:11px">NEXTGEN Logistics · Secure administrator workspace</p></main></div>
+<script>
+(function(){const toggle=document.getElementById('menuToggle'),side=document.getElementById('adminSidebar'),overlay=document.getElementById('mobileOverlay');function close(){side.classList.remove('is-open');overlay.classList.remove('is-open');toggle.setAttribute('aria-expanded','false')}toggle.addEventListener('click',()=>{const open=!side.classList.contains('is-open');side.classList.toggle('is-open',open);overlay.classList.toggle('is-open',open);toggle.setAttribute('aria-expanded',String(open))});overlay.addEventListener('click',close);side.querySelectorAll('a').forEach(a=>a.addEventListener('click',close));const search=document.getElementById('shipmentSearch'),status=document.getElementById('statusFilter'),type=document.getElementById('typeFilter'),rows=[...document.querySelectorAll('#shipmentRows tr')],noMatches=document.getElementById('noMatches'),count=document.getElementById('resultCount');function filter(){let shown=0;rows.forEach(row=>{const ok=row.dataset.search.includes(search.value.trim().toLowerCase())&&(!status.value||row.dataset.status===status.value)&&(!type.value||row.dataset.type===type.value);row.hidden=!ok;if(ok)shown++});noMatches.hidden=shown!==0||rows.length===0;count.textContent='Showing '+shown+' of '+rows.length+' shipment'+(rows.length===1?'':'s')}[search,status,type].forEach(el=>el.addEventListener('input',filter));})();
+</script></body></html>
