@@ -65,18 +65,13 @@ if (empty($_SESSION['USER_NUM'])) {
     }
 ?>
 
-<section class="page-title-secttion">
-    <div class="container">
-      <div class="page-header">
-        <h1>Tracked Parcel Information</h1>
-      </div>
-      <ol class="breadcrumb justify-content-center">
-        <li><a href="#">Tracking Number </a></li>
-        <li class="active">: <?php echo tracking_escape($num); ?></li>
-      </ol>
-    </div>
+<section class="tracking-details-hero">
+  <div class="tracking-details-hero-inner">
+    <div><span class="tracking-eyebrow"><i class="fa-solid fa-location-dot" aria-hidden="true"></i> NEXTGEN SHIPMENT TRACKING</span><h1>Shipment overview</h1><p>Track your parcel's progress and review its recorded route details.</p></div>
+    <div class="tracking-details-id"><span>TRACKING NUMBER</span><strong><?php echo tracking_escape($num); ?></strong><a href="tracking.php"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i> Track another</a></div>
+  </div>
 </section>
-<div class="container mb-5">
+<div class="container mb-5 tracking-details-page">
     <div class="row">
       <div class="col-12 col-md-6">
         <h3 class="my-4">Parcel Information</h3>
