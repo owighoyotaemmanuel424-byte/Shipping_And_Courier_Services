@@ -821,3 +821,13 @@ section:not(.page-title-secttion) { scroll-margin-top: 90px; }
 .tracking-status-summary>div strong{color:#1e3551;font-size:14px;overflow-wrap:anywhere}
 .tracking-status-updated{margin-left:auto;color:#8290a3;font-size:10px;white-space:nowrap}
 @media(max-width:575px){.tracking-status-summary{align-items:flex-start;flex-wrap:wrap}.tracking-status-updated{width:100%;margin:0 0 0 22px}.tracking-id-actions{gap:10px}}
+
+
+.tracking-again-card{max-width:760px;margin:34px auto 12px;padding:clamp(22px,4vw,34px);border:1px solid #e2eaf3;border-radius:18px;background:#fff;box-shadow:0 12px 32px rgba(23,48,83,.06)}
+.tracking-again-card h3{margin:5px 0 7px!important;color:#1a2e47;font-size:24px;font-weight:800}
+.tracking-again-card>p{margin:0 0 20px;color:#77869a;font-size:13px;line-height:1.7}
+.tracking-again-card .tracking-search-form{display:grid;grid-template-columns:minmax(0,1fr) 230px;align-items:end;column-gap:12px;row-gap:0}
+.tracking-again-card .tracking-search-form label{grid-column:1/-1}
+.tracking-again-card .tracking-search-form button{margin:0}
+.tracking-again-card .tracking-input-wrap{min-width:0}
+@media(max-width:575px){.tracking-again-card{margin:24px 0;padding:20px}.tracking-again-card .tracking-search-form{grid-template-columns:1fr}.tracking-again-card .tracking-search-form button{margin-top:12px}}
