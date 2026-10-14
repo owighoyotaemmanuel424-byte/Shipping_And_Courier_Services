@@ -41,7 +41,7 @@
                   <div class="form-row">
                     <div class="col-12 col-md-6 mb-3">
                       <label for="validationDefault01">Tracking Number</label>
-                      <input type="text" name ="tracknum" class="form-control" id="validationDefault01" value="<?php echo htmlspecialchars((string)$num, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?>" required>
+                      <input type="text" name="tracknum" class="form-control" id="validationDefault01" value="<?php echo htmlspecialchars((string)$num, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?>" readonly aria-describedby="trackingNumberHelp"><small id="trackingNumberHelp" class="form-text text-muted">Tracking IDs are generated when the shipment is created and cannot be changed.</small>
                     </div>
                     <div class="col-12 col-md-6 mb-3">
                       <label class="mr-sm-2" for="inlineFormCustomSelect">Shipment Type</label>
