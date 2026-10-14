@@ -20,6 +20,15 @@ This project is an implementation of a courier and shipping website with feature
 
 ## Database and first administrator setup
 
+### Initialize a new MySQL database
+
+1. Create an empty MySQL database on your host.
+2. Import `database/schema.sql` using your host's SQL console or database manager. It creates the `admin` and `tracking` tables and indexes expected by the PHP application.
+3. Set the database environment variables listed below on the PHP service.
+
+For a database that already contains shipment or administrator records, take a backup and inspect its schema before importing. The script uses `CREATE TABLE IF NOT EXISTS`; it does not migrate or alter existing tables.
+
+
 Configure the PHP service with these environment variables:
 
 - `DB_HOST`
