@@ -1,39 +1,35 @@
--- NEXTGEN Logistics MySQL schema
--- Compatible with database/config.php and the existing admin/tracking PHP handlers.
--- Back up any existing database before importing this file into a populated database.
+-- NEXTGEN Logistics SQLite schema
+-- Database file: /data/nextgen.sqlite (configure SQLITE_PATH to override)
 
 CREATE TABLE IF NOT EXISTS admin (
-    adminid INT UNSIGNED NOT NULL AUTO_INCREMENT,
-    username VARCHAR(190) NOT NULL,
-    passw VARCHAR(255) NOT NULL,
-    PRIMARY KEY (adminid),
-    UNIQUE KEY uq_admin_username (username)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+    adminid INTEGER PRIMARY KEY AUTOINCREMENT,
+    username TEXT NOT NULL UNIQUE,
+    passw TEXT NOT NULL
+);
 
 CREATE TABLE IF NOT EXISTS tracking (
-    id INT UNSIGNED NOT NULL AUTO_INCREMENT,
-    first_name VARCHAR(190) NOT NULL,
-    last_name VARCHAR(190) NOT NULL,
-    tracking_number VARCHAR(100) NOT NULL,
-    shipment_type VARCHAR(100) NOT NULL,
-    content TEXT NOT NULL,
-    shipment_date DATE NOT NULL,
-    delivery_date DATE NOT NULL,
-    source_city VARCHAR(190) NOT NULL,
-    source_state VARCHAR(190) NOT NULL,
-    source_zip VARCHAR(40) NOT NULL DEFAULT '',
-    current_city VARCHAR(190) NOT NULL,
-    current_state VARCHAR(190) NOT NULL,
-    current_zip VARCHAR(40) NOT NULL DEFAULT '',
-    destination_city VARCHAR(190) NOT NULL,
-    destination_state VARCHAR(190) NOT NULL,
-    destination_zip VARCHAR(40) NOT NULL DEFAULT '',
-    contact_number VARCHAR(60) NOT NULL,
-    parcel_status VARCHAR(100) NOT NULL DEFAULT 'Packaging',
-    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    PRIMARY KEY (id),
-    UNIQUE KEY uq_tracking_number (tracking_number),
-    KEY idx_tracking_status (parcel_status),
-    KEY idx_tracking_delivery_date (delivery_date)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    first_name TEXT NOT NULL,
+    last_name TEXT NOT NULL,
+    tracking_number TEXT NOT NULL UNIQUE,
+    shipment_type TEXT NOT NULL,
+    content TEXT NOT NULL DEFAULT '',
+    shipment_date TEXT NOT NULL,
+    delivery_date TEXT NOT NULL,
+    source_city TEXT NOT NULL,
+    source_state TEXT NOT NULL,
+    source_zip TEXT NOT NULL DEFAULT '',
+    current_city TEXT NOT NULL,
+    current_state TEXT NOT NULL,
+    current_zip TEXT NOT NULL DEFAULT '',
+    destination_city TEXT NOT NULL,
+    destination_state TEXT NOT NULL,
+    destination_zip TEXT NOT NULL DEFAULT '',
+    contact_number TEXT NOT NULL,
+    parcel_status TEXT NOT NULL DEFAULT 'Packaging',
+    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS idx_tracking_status ON tracking(parcel_status);
+CREATE INDEX IF NOT EXISTS idx_tracking_delivery_date ON tracking(delivery_date);
