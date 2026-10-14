@@ -225,5 +225,4 @@ if(points.length>1){L.polyline(points,{color:'#1769aa',weight:4,opacity:.8,dashA
 status.textContent=found?'Mapped '+found+' of '+places.length+' shipment locations.':'Could not locate the saved addresses. Check city/state details.'}renderRoute()})();
 </script>
 
-  require_once('footer.php')
-?>
+<?php require_once('footer.php'); ?>
