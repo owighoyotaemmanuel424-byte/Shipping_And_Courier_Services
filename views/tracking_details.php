@@ -175,12 +175,20 @@ if (empty($_SESSION['USER_NUM'])) {
       </div>
       <div class="col-12 col-md-6">
       <div class="col-12"><section class="shipment-map-card" aria-labelledby="shipmentMapTitle">
-<div class="shipment-map-heading"><div><p class="shipment-map-kicker">SHIPMENT ROUTE</p><h3 id="shipmentMapTitle">Track your parcel on the map</h3><p>Route overview based on shipment locations recorded by NEXTGEN.</p></div>
-<div class="shipment-map-controls" role="group" aria-label="Map layer"><button type="button" class="is-active" id="shipmentStreetLayer">Street</button><button type="button" id="shipmentSatelliteLayer">Satellite</button></div></div>
-<div id="shipmentTrackingMap" class="shipment-tracking-map" role="application" aria-label="Interactive shipment route map"></div>
-<div class="shipment-map-legend"><span><i class="shipment-map-dot shipment-origin-dot"></i>Origin</span><span><i class="shipment-map-dot shipment-current-dot"></i>Recorded current location</span><span><i class="shipment-map-dot shipment-destination-dot"></i>Destination</span></div>
-<p class="shipment-map-note" id="shipmentMapStatus" role="status">Preparing route map…</p>
-<p class="shipment-map-disclaimer">Map pins are estimated from saved city/state fields. This is not live GPS tracking; real-time courier position requires connected GPS coordinates.</p></section></div>
+<?php
+$mapOrigin = trim($row['source_city'] . ', ' . $row['source_state'] . ' ' . $row['source_zip']);
+$mapDestination = trim($row['destination_city'] . ', ' . $row['destination_state'] . ' ' . $row['destination_zip']);
+$mapCurrent = trim($row['current_city'] . ', ' . $row['current_state'] . ' ' . $row['current_zip']);
+$mapQuery = http_build_query(['saddr' => $mapOrigin, 'daddr' => $mapDestination, 'output' => 'embed', 't' => 'm']);
+$mapUrl = 'https://maps.google.com/maps?' . $mapQuery;
+$mapSatelliteUrl = 'https://maps.google.com/maps?' . http_build_query(['saddr' => $mapOrigin, 'daddr' => $mapDestination, 'output' => 'embed', 't' => 'k']);
+?>
+<div class="shipment-map-heading"><div><p class="shipment-map-kicker">SHIPMENT ROUTE</p><h3 id="shipmentMapTitle">Track your parcel on the map</h3><p>Google Maps route overview based on shipment locations recorded by NEXTGEN.</p></div>
+<div class="shipment-map-controls" role="group" aria-label="Map layer"><button type="button" class="is-active" id="shipmentStreetLayer" data-map-url="<?php echo tracking_escape($mapUrl); ?>">Street</button><button type="button" id="shipmentSatelliteLayer" data-map-url="<?php echo tracking_escape($mapSatelliteUrl); ?>">Satellite</button></div></div>
+<iframe id="shipmentTrackingMap" class="shipment-tracking-map" title="Google Maps shipment route from origin to destination" src="<?php echo tracking_escape($mapUrl); ?>" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
+<div class="shipment-map-legend"><span><i class="shipment-map-dot shipment-origin-dot"></i>Origin: <?php echo tracking_escape($mapOrigin); ?></span><span><i class="shipment-map-dot shipment-current-dot"></i>Recorded current location: <?php echo tracking_escape($mapCurrent); ?></span><span><i class="shipment-map-dot shipment-destination-dot"></i>Destination: <?php echo tracking_escape($mapDestination); ?></span></div>
+<p class="shipment-map-note" id="shipmentMapStatus" role="status">Showing the saved shipment route in Google Maps.</p>
+<p class="shipment-map-disclaimer">The route uses saved shipment addresses and is not live GPS tracking. The recorded current location is shown from shipment records; live courier positioning requires connected GPS coordinates.</p></section></div>
             <h3 class="text-center my-4">Track Another Parcel</h3>
             <p>
                 <?php
@@ -204,23 +212,20 @@ if (empty($_SESSION['USER_NUM'])) {
       </div>
     </div>
 </div>
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
 <script>
-(function(){const el=document.getElementById('shipmentTrackingMap');if(!el||!window.L)return;
-const places=[{key:'origin',label:'Origin',address:<?php echo json_encode(trim($row['source_city'] . ' ' . $row['source_state'] . ' ' . $row['source_zip']), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT); ?>},{key:'current',label:'Recorded current location',address:<?php echo json_encode(trim($row['current_city'] . ' ' . $row['current_state'] . ' ' . $row['current_zip']), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT); ?>},{key:'destination',label:'Destination',address:<?php echo json_encode(trim($row['destination_city'] . ' ' . $row['destination_state'] . ' ' . $row['destination_zip']), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT); ?>}].filter(p=>p.address&&p.address.trim());
-const status=document.getElementById('shipmentMapStatus'),map=L.map(el,{scrollWheelZoom:false}).setView([20,0],2);
-const street=L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{attribution:'&copy; OpenStreetMap contributors &copy; CARTO',subdomains:'abcd',maxZoom:20});
-const satellite=L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{attribution:'Tiles &copy; Esri',maxZoom:19});street.addTo(map);
-const streetBtn=document.getElementById('shipmentStreetLayer'),satBtn=document.getElementById('shipmentSatelliteLayer');
-streetBtn.addEventListener('click',function(){map.removeLayer(satellite);street.addTo(map);this.classList.add('is-active');satBtn.classList.remove('is-active')});
-satBtn.addEventListener('click',function(){map.removeLayer(street);satellite.addTo(map);this.classList.add('is-active');streetBtn.classList.remove('is-active')});
-const styles={origin:['#1769aa','O'],current:['#e59b21','C'],destination:['#15966a','D']},points=[];
-async function lookup(address){const r=await fetch('https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&q='+encodeURIComponent(address),{headers:{Accept:'application/json'}});if(!r.ok)throw Error('Geocoding failed');const a=await r.json();return a.length?[+a[0].lat,+a[0].lon]:null}
-async function renderRoute(){if(!places.length){status.textContent='Shipment addresses are unavailable.';return}let found=0;
-for(let i=0;i<places.length;i++){const p=places[i];try{const point=await lookup(p.address);if(point){const s=styles[p.key],icon=L.divIcon({className:'shipment-map-marker-wrap',html:'<span class="shipment-map-marker" style="--marker-color:'+s[0]+'">'+s[1]+'</span>',iconSize:[34,34],iconAnchor:[17,17]});L.marker(point,{icon}).addTo(map).bindPopup('<strong>'+p.label+'</strong><br>'+p.address.replace(/[&<>"]/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch])));points.push(point);found++}}catch(e){console.warn('Shipment location map lookup failed',e)}if(i<places.length-1)await new Promise(r=>setTimeout(r,1100))}
-if(points.length>1){L.polyline(points,{color:'#1769aa',weight:4,opacity:.8,dashArray:'8 8'}).addTo(map);map.fitBounds(L.latLngBounds(points).pad(.18),{maxZoom:8})}else if(points.length===1)map.setView(points[0],8);
-status.textContent=found?'Mapped '+found+' of '+places.length+' shipment locations.':'Could not locate the saved addresses. Check city/state details.'}renderRoute()})();
+(function(){
+  const mapFrame = document.getElementById('shipmentTrackingMap');
+  const streetButton = document.getElementById('shipmentStreetLayer');
+  const satelliteButton = document.getElementById('shipmentSatelliteLayer');
+  if (!mapFrame || !streetButton || !satelliteButton) return;
+  [streetButton, satelliteButton].forEach(function(button) {
+    button.addEventListener('click', function() {
+      mapFrame.src = this.getAttribute('data-map-url');
+      streetButton.classList.toggle('is-active', this === streetButton);
+      satelliteButton.classList.toggle('is-active', this === satelliteButton);
+    });
+  });
+})();
 </script>
 
 <?php require_once('footer.php'); ?>
