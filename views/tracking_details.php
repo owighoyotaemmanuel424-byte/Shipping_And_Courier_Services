@@ -31,50 +31,35 @@ if (empty($_SESSION['USER_NUM'])) {
   require('header.php');
 ?>
 <?php
-    $num = $_SESSION['USER_NUM'];
-    require_once('../database/config.php');
-    $conn = mysqli_connect(DB_HOST, DB_USER, DB_PASSWORD, DB_DATABASE, DB_PORT);
-    if (!$conn) {
-        error_log('Tracking details database connection failed: ' . mysqli_connect_error());
+    $num = (string)$_SESSION['USER_NUM'];
+    require_once __DIR__ . '/../database/connection.php';
+    try {
+        $stmt = app_db()->prepare('SELECT * FROM tracking WHERE tracking_number = :number LIMIT 1');
+        $stmt->execute([':number' => $num]);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+    } catch (Throwable $exception) {
+        error_log('Tracking details lookup failed: ' . $exception->getMessage());
         http_response_code(503);
         exit('Tracking information is temporarily unavailable.');
     }
-    mysqli_set_charset($conn, 'utf8mb4');
-    $stmt = mysqli_prepare($conn, 'SELECT * FROM tracking WHERE tracking_number = ? LIMIT 1');
-    if (!$stmt) {
-        error_log('Tracking details query preparation failed: ' . mysqli_error($conn));
-        mysqli_close($conn);
-        http_response_code(503);
-        exit('Tracking information is temporarily unavailable.');
-    }
-    mysqli_stmt_bind_param($stmt, 's', $num);
-    mysqli_stmt_execute($stmt);
-    $result = mysqli_stmt_get_result($stmt);
-    if ($result && mysqli_num_rows($result) === 1) {
-        while($row = mysqli_fetch_array($result)) {
-            $id = $row['id'];
-            $num = $row['tracking_number'];
-            $shipdate = $row['shipment_date'];
-            $estimate_date = $row['delivery_date'];
-            $ship_type =$row['shipment_type'];
-            $content = $row['content'];
-            $receiver = $row['first_name'] . ' ' . $row['last_name'];
-            $source_address = $row['source_city'] . ', ' . $row['source_state'] . ', ' . $row['source_zip'];
-            $current_address = $row['current_city'] . ', ' . $row['current_state'] . ', ' . $row['current_zip'];
-            $destination_address = $row['destination_city'] . ', ' . $row['destination_state'] . ', ' . $row['destination_zip'];
-            $phone = $row['contact_number'];
-            $status = $row['parcel_status'];
-        }
-    } else {
-        mysqli_stmt_close($stmt);
-        mysqli_close($conn);
+    if (!$row) {
         unset($_SESSION['USER_NUM']);
         $_SESSION['ERRMSG_ARR'] = ['We could not find that shipment. Please track it again.'];
         header('Location: tracking.php');
         exit();
     }
-    mysqli_stmt_close($stmt);
-    mysqli_close($conn);
+    $id = $row['id'];
+    $num = $row['tracking_number'];
+    $shipdate = $row['shipment_date'];
+    $estimate_date = $row['delivery_date'];
+    $ship_type = $row['shipment_type'];
+    $content = $row['content'];
+    $receiver = $row['first_name'] . ' ' . $row['last_name'];
+    $source_address = $row['source_city'] . ', ' . $row['source_state'] . ', ' . $row['source_zip'];
+    $current_address = $row['current_city'] . ', ' . $row['current_state'] . ', ' . $row['current_zip'];
+    $destination_address = $row['destination_city'] . ', ' . $row['destination_state'] . ', ' . $row['destination_zip'];
+    $phone = $row['contact_number'];
+    $status = $row['parcel_status'];
     function tracking_escape($value) {
         return htmlspecialchars((string)$value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
     }
