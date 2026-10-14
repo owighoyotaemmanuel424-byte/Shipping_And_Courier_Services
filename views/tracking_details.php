@@ -137,7 +137,7 @@ if (empty($_SESSION['USER_NUM'])) {
           <p class="tracking-progress-kicker">LIVE SHIPMENT OVERVIEW</p>
           <h3 id="trackingProgressTitle">Delivery progress</h3>
           <p class="tracking-progress-number">Tracking ID: <strong><?php echo tracking_escape($num); ?></strong></p>
-          <div class="tracking-status-summary"><span class="tracking-status-indicator <?php echo $status === 'Delivered' ? 'is-delivered' : ($status === 'Missing Parcel' ? 'is-attention' : 'is-moving'); ?>"></span><div><span class="tracking-status-label">CURRENT STATUS</span><strong><?php echo tracking_escape($status); ?></strong></div><span class="tracking-status-updated"><i class="fa-regular fa-calendar" aria-hidden="true"></i> Updated <?php echo tracking_escape($shipdate); ?></span></div>
+          <div class="tracking-status-summary"><span class="tracking-status-indicator <?php echo $status === 'Delivered' ? 'is-delivered' : ($status === 'Missing Parcel' ? 'is-attention' : 'is-moving'); ?>"></span><div><span class="tracking-status-label">CURRENT STATUS</span><strong><?php echo tracking_escape($status); ?></strong></div><span class="tracking-status-updated"><i class="fa-regular fa-calendar" aria-hidden="true"></i> Shipment date: <?php echo tracking_escape($shipdate); ?></span></div>
           <?php if ($status === 'Missing Parcel'): ?>
             <div class="tracking-alert" role="status"><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i><div><strong>Shipment requires attention</strong><p>Please contact customer support for the latest information about this parcel.</p></div></div>
           <?php else:
@@ -184,26 +184,24 @@ $mapSatelliteUrl = 'https://maps.google.com/maps?' . http_build_query(['saddr' =
 <div class="shipment-map-legend"><span><i class="shipment-map-dot shipment-origin-dot"></i>Origin: <?php echo tracking_escape($mapOrigin); ?></span><span><i class="shipment-map-dot shipment-current-dot"></i>Recorded current location: <?php echo tracking_escape($mapCurrent); ?></span><span><i class="shipment-map-dot shipment-destination-dot"></i>Destination: <?php echo tracking_escape($mapDestination); ?></span></div>
 <p class="shipment-map-note" id="shipmentMapStatus" role="status">Showing the saved shipment route in Google Maps.</p>
 <p class="shipment-map-disclaimer">The route uses saved shipment addresses and is not live GPS tracking. The recorded current location is shown from shipment records; live courier positioning requires connected GPS coordinates.</p></section>
-            <h3 class="text-center my-4">Track Another Parcel</h3>
-            <p>
-                <?php
-                    if(isset($_SESSION['ERRMSG_ARR']) && is_array($_SESSION['ERRMSG_ARR']) && count($_SESSION['ERRMSG_ARR']) >0 ){
-                        echo '<p class="alert-danger">' ;
-                            foreach($_SESSION['ERRMSG_ARR'] as $msg) {
-                                echo tracking_escape($msg);
-                            }
-                        echo '</p>';
-                        unset($_SESSION['ERRMSG_ARR']);
-                    }
-                ?>
-            </p><br>
-            <div class="w-100 tracking-form mx-auto border">
-                <h6 class="text-center my-4">Enter Tracking Number</h6> <br />
-                <form action="../controllers/tracking_exec.php" method="POST" name="tracking" class="form-inline d-flex justify-content-center mb-4">
-                    <input type="text" class="form-control mb-2 mr-sm-2" name="trackingnumber" id="inlineFormInputName2" maxlength="100" pattern="[A-Za-z0-9_-]+" autocomplete="off" placeholder="Enter tracking ID" required>
-                    <button type="submit" class="btn btn-primary mb-2">Track</button>
-                </form>
-            </div>
+            <section class="tracking-again-card" aria-labelledby="trackAnotherTitle">
+              <span class="tracking-search-kicker">ANOTHER SHIPMENT?</span>
+              <h3 id="trackAnotherTitle">Track another parcel</h3>
+              <p>Have another tracking number? Enter it below to check a different shipment.</p>
+              <?php
+                if(isset($_SESSION['ERRMSG_ARR']) && is_array($_SESSION['ERRMSG_ARR']) && count($_SESSION['ERRMSG_ARR']) > 0) {
+                  echo '<div class="tracking-form-error" role="alert">';
+                  foreach($_SESSION['ERRMSG_ARR'] as $msg) echo '<p>' . tracking_escape($msg) . '</p>';
+                  echo '</div>';
+                  unset($_SESSION['ERRMSG_ARR']);
+                }
+              ?>
+              <form action="../controllers/tracking_exec.php" method="POST" name="trackingAgain" class="tracking-search-form">
+                <label for="trackingNumberAgain">Tracking number</label>
+                <div class="tracking-input-wrap"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><input type="text" name="trackingnumber" id="trackingNumberAgain" maxlength="100" pattern="[A-Za-z0-9_-]+" autocomplete="off" placeholder="Enter tracking ID" required></div>
+                <button type="submit">Track another shipment <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></button>
+              </form>
+            </section>
       </div>
     </div>
 </div>
