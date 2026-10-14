@@ -9,6 +9,8 @@ $fields = ['firstname'=>190,'lastname'=>190,'tracknum'=>100,'shipmentType'=>100,
 $data=[];
 foreach ($fields as $key=>$max) {
     $value=trim((string)($_POST[$key] ?? ''));
+    // Tracking IDs are generated server-side, never accepted from the browser.
+    if ($key === 'tracknum') { $value = 'PENDING'; }
     $optional=in_array($key,['content','szip','czip','dzip'],true);
     if ((!$optional && $value==='') || strlen($value)>$max) {
         $_SESSION['ERRMSG_ARR']=['Please complete all shipment fields using valid values.']; header('Location: '.$redirect); exit();
@@ -28,11 +30,12 @@ if (!preg_match('/^[A-Za-z0-9_-]+$/',$data[2])) {
     $_SESSION['ERRMSG_ARR']=['Tracking numbers may contain only letters, numbers, hyphens, and underscores.']; header('Location: '.$redirect); exit();
 }
 try {
+    $data[2] = 'NG' . date('ymd') . strtoupper(bin2hex(random_bytes(5)));
     $sql='INSERT INTO tracking (first_name,last_name,tracking_number,shipment_type,content,shipment_date,delivery_date,source_city,source_state,source_zip,current_city,current_state,current_zip,destination_city,destination_state,destination_zip,contact_number,parcel_status) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)';
     app_db()->prepare($sql)->execute($data);
 } catch (PDOException $exception) {
     error_log('Create shipment failed: '.$exception->getMessage());
-    $_SESSION['ERRMSG_ARR']=[str_contains(strtolower($exception->getMessage()),'unique') ? 'That tracking number already exists. Please use a unique number.' : 'Unable to save shipment right now. Please try again.'];
+    $_SESSION['ERRMSG_ARR']=['Unable to generate or save a unique tracking number right now. Please try again.'];
     header('Location: '.$redirect); exit();
 } catch (Throwable $exception) {
     error_log('Create shipment failed: '.$exception->getMessage());
