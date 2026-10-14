@@ -1,14 +1,12 @@
-FROM php:8.4-apache
+FROM dunglas/frankenphp:php8.4-alpine
 
 # Install the MySQL extensions required by the application's mysqli database layer.
-RUN docker-php-ext-install mysqli pdo_mysql \
-    && a2enmod rewrite
+RUN install-php-extensions mysqli pdo_mysql
 
-# Keep the repository root as the web document root.
-WORKDIR /var/www/html
-COPY . /var/www/html/
+WORKDIR /app
+COPY . /app/
 
-# Ensure Apache can read the application files.
-RUN chown -R www-data:www-data /var/www/html
+# Serve the repository root because index.php and admin-setup.php live there.
+COPY Caddyfile /etc/caddy/Caddyfile
 
-EXPOSE 80
+EXPOSE 8080
