@@ -20,6 +20,23 @@ if ($username === '' || $password === '' || strlen($username) > 190 || strlen($p
 if (!$db_login instanceof PDO) {
     $_SESSION['ERRMSG_ARR'] = ['Login is temporarily unavailable. Please try again later.']; header('Location: index.php'); exit();
 }
+// Persistent per-IP throttling makes repeated password guessing slower across sessions.
+$remoteAddress = (string)($_SERVER['REMOTE_ADDR'] ?? 'unknown');
+$ipHash = hash('sha256', $remoteAddress);
+$now = time();
+try {
+    $rate = $db_login->prepare('SELECT attempts, window_started_at, locked_until FROM admin_login_attempts WHERE ip_hash = :ip_hash LIMIT 1');
+    $rate->execute([':ip_hash' => $ipHash]);
+    $rateRow = $rate->fetch();
+    if ($rateRow && (int)$rateRow['locked_until'] > $now) {
+        $waitMinutes = max(1, (int)ceil(((int)$rateRow['locked_until'] - $now) / 60));
+        $_SESSION['ERRMSG_ARR'] = ["Too many sign-in attempts. Try again in {$waitMinutes} minute(s)."];
+        header('Location: index.php'); exit();
+    }
+} catch (Throwable $exception) {
+    error_log('Admin login throttle lookup failed: ' . $exception->getMessage());
+    $_SESSION['ERRMSG_ARR'] = ['Login is temporarily unavailable. Please try again later.']; header('Location: index.php'); exit();
+}
 try {
     $stmt = $db_login->prepare('SELECT adminid, username, passw FROM admin WHERE username = :username LIMIT 1');
     $stmt->execute([':username' => $username]);
@@ -44,9 +61,36 @@ if ($row && isset($row['passw'])) {
     }
 }
 if (!$authenticated) {
+    try {
+        $db_login->beginTransaction();
+        $check = $db_login->prepare('SELECT attempts, window_started_at FROM admin_login_attempts WHERE ip_hash = :ip_hash LIMIT 1');
+        $check->execute([':ip_hash' => $ipHash]);
+        $attemptRow = $check->fetch();
+        if (!$attemptRow || ($now - (int)$attemptRow['window_started_at']) >= 900) {
+            $attempts = 1;
+            $windowStarted = $now;
+        } else {
+            $attempts = (int)$attemptRow['attempts'] + 1;
+            $windowStarted = (int)$attemptRow['window_started_at'];
+        }
+        $lockedUntil = $attempts >= 8 ? $now + 900 : 0;
+        $save = $db_login->prepare('INSERT INTO admin_login_attempts (ip_hash, attempts, window_started_at, locked_until) VALUES (:ip_hash, :attempts, :window_started_at, :locked_until) ON CONFLICT(ip_hash) DO UPDATE SET attempts = excluded.attempts, window_started_at = excluded.window_started_at, locked_until = excluded.locked_until');
+        $save->execute([':ip_hash' => $ipHash, ':attempts' => $attempts, ':window_started_at' => $windowStarted, ':locked_until' => $lockedUntil]);
+        $db_login->commit();
+    } catch (Throwable $exception) {
+        if ($db_login->inTransaction()) $db_login->rollBack();
+        error_log('Admin login throttle update failed: ' . $exception->getMessage());
+    }
     $_SESSION['ERRMSG_ARR'] = ['Invalid username or password.']; header('Location: index.php'); exit();
 }
+try {
+    $clearRate = $db_login->prepare('DELETE FROM admin_login_attempts WHERE ip_hash = :ip_hash');
+    $clearRate->execute([':ip_hash' => $ipHash]);
+} catch (Throwable $exception) {
+    error_log('Admin login throttle reset failed: ' . $exception->getMessage());
+}
 session_regenerate_id(true);
+$_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 $_SESSION['userId'] = (int)$row['adminid'];
 $_SESSION['username'] = $row['username'];
 unset($_SESSION['ERRMSG_ARR']);
