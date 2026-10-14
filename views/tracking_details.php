@@ -173,8 +173,7 @@ if (empty($_SESSION['USER_NUM'])) {
           <div class="tracking-delivery-date"><i class="fa-regular fa-calendar-check" aria-hidden="true"></i><div><span>Estimated delivery</span><strong><?php echo tracking_escape($estimate_date); ?></strong></div></div>
         </section>
       </div>
-      <div class="col-12 col-md-6">
-      <div class="col-12"><section class="shipment-map-card" aria-labelledby="shipmentMapTitle">
+      <div class="col-12"><section class="shipment-map-card shipment-map-card-wide" aria-labelledby="shipmentMapTitle">
 <?php
 $mapOrigin = trim($row['source_city'] . ', ' . $row['source_state'] . ' ' . $row['source_zip']);
 $mapDestination = trim($row['destination_city'] . ', ' . $row['destination_state'] . ' ' . $row['destination_zip']);
@@ -188,7 +187,7 @@ $mapSatelliteUrl = 'https://maps.google.com/maps?' . http_build_query(['saddr' =
 <iframe id="shipmentTrackingMap" class="shipment-tracking-map" title="Google Maps shipment route from origin to destination" src="<?php echo tracking_escape($mapUrl); ?>" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
 <div class="shipment-map-legend"><span><i class="shipment-map-dot shipment-origin-dot"></i>Origin: <?php echo tracking_escape($mapOrigin); ?></span><span><i class="shipment-map-dot shipment-current-dot"></i>Recorded current location: <?php echo tracking_escape($mapCurrent); ?></span><span><i class="shipment-map-dot shipment-destination-dot"></i>Destination: <?php echo tracking_escape($mapDestination); ?></span></div>
 <p class="shipment-map-note" id="shipmentMapStatus" role="status">Showing the saved shipment route in Google Maps.</p>
-<p class="shipment-map-disclaimer">The route uses saved shipment addresses and is not live GPS tracking. The recorded current location is shown from shipment records; live courier positioning requires connected GPS coordinates.</p></section></div>
+<p class="shipment-map-disclaimer">The route uses saved shipment addresses and is not live GPS tracking. The recorded current location is shown from shipment records; live courier positioning requires connected GPS coordinates.</p></section>
             <h3 class="text-center my-4">Track Another Parcel</h3>
             <p>
                 <?php
