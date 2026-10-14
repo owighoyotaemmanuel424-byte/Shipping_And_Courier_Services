@@ -138,6 +138,42 @@ if (empty($_SESSION['USER_NUM'])) {
           </div>
       </div>
       <div class="col-12 col-md-6">
+        <section class="tracking-progress-card" aria-labelledby="trackingProgressTitle">
+          <p class="tracking-progress-kicker">LIVE SHIPMENT OVERVIEW</p>
+          <h3 id="trackingProgressTitle">Delivery progress</h3>
+          <p class="tracking-progress-number">Tracking ID: <strong><?php echo tracking_escape($num); ?></strong></p>
+          <?php if ($status === 'Missing Parcel'): ?>
+            <div class="tracking-alert" role="status"><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i><div><strong>Shipment requires attention</strong><p>Please contact customer support for the latest information about this parcel.</p></div></div>
+          <?php else:
+            $trackingStages = ['Packaging' => 'Shipment prepared', 'Shipped' => 'Shipment dispatched', 'Transit' => 'In transit', 'Delivered' => 'Delivered'];
+            $stageOrder = ['Packaging', 'Shipped', 'Transit', 'Delivered'];
+            $activeStage = array_search($status, $stageOrder, true);
+            if ($activeStage === false) $activeStage = 0;
+          ?>
+            <ol class="tracking-timeline">
+              <?php foreach ($stageOrder as $stageIndex => $stageName): $stageDone = $stageIndex <= $activeStage; ?>
+                <li class="<?php echo $stageDone ? 'is-complete' : ''; ?> <?php echo $stageIndex === $activeStage ? 'is-current' : ''; ?>">
+                  <span class="tracking-timeline-marker" aria-hidden="true"><?php if ($stageDone): ?><i class="fa-solid fa-check"></i><?php else: ?><span><?php echo $stageIndex + 1; ?></span><?php endif; ?></span>
+                  <div class="tracking-timeline-copy"><strong><?php echo tracking_escape($trackingStages[$stageName]); ?></strong>
+                    <?php if ($stageIndex === 0): ?><span>Shipment information recorded</span>
+                    <?php elseif ($stageIndex === 1): ?><span>Parcel has left the origin</span>
+                    <?php elseif ($stageIndex === 2): ?><span>Parcel is moving toward its destination</span>
+                    <?php else: ?><span>Shipment delivery completed</span><?php endif; ?>
+                  </div>
+                  <?php if ($stageIndex === $activeStage): ?><span class="tracking-current-badge">Current</span><?php endif; ?>
+                </li>
+              <?php endforeach; ?>
+            </ol>
+          <?php endif; ?>
+          <div class="tracking-route-summary">
+            <div><span>ORIGIN</span><strong><?php echo tracking_escape($row['source_city']); ?></strong><small><?php echo tracking_escape(trim($row['source_state'] . ' ' . $row['source_zip'])); ?></small></div>
+            <i class="fa-solid fa-arrow-right-long" aria-hidden="true"></i>
+            <div><span>DESTINATION</span><strong><?php echo tracking_escape($row['destination_city']); ?></strong><small><?php echo tracking_escape(trim($row['destination_state'] . ' ' . $row['destination_zip'])); ?></small></div>
+          </div>
+          <div class="tracking-delivery-date"><i class="fa-regular fa-calendar-check" aria-hidden="true"></i><div><span>Estimated delivery</span><strong><?php echo tracking_escape($estimate_date); ?></strong></div></div>
+        </section>
+      </div>
+      <div class="col-12 col-md-6">
             <h3 class="text-center my-4">Track Another Parcel</h3>
             <p>
                 <?php
@@ -154,7 +190,7 @@ if (empty($_SESSION['USER_NUM'])) {
             <div class="w-100 tracking-form mx-auto border">
                 <h6 class="text-center my-4">Enter Tracking Number</h6> <br />
                 <form action="../controllers/tracking_exec.php" method="POST" name="tracking" class="form-inline d-flex justify-content-center mb-4">
-                    <input type="text" class="form-control mb-2 mr-sm-2" name ="trackingnumber" id="inlineFormInputName2" placeholder="001234567" required>
+                    <input type="text" class="form-control mb-2 mr-sm-2" name="trackingnumber" id="inlineFormInputName2" maxlength="100" pattern="[A-Za-z0-9_-]+" autocomplete="off" placeholder="Enter tracking ID" required>
                     <button type="submit" class="btn btn-primary mb-2">Track</button>
                 </form>
             </div>
