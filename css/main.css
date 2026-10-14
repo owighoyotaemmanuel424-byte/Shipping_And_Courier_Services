@@ -738,3 +738,19 @@ section:not(.page-title-secttion) { scroll-margin-top: 90px; }
 .tracking-delivery-date{display:flex;align-items:center;gap:12px;margin-top:18px;padding:14px;border-radius:12px;background:#edf5ff}.tracking-delivery-date>i{font-size:20px;color:#2874c8}.tracking-delivery-date div{display:flex;flex-direction:column;gap:4px}.tracking-delivery-date strong{font-size:14px;color:#263b58}
 .tracking-alert{display:flex;gap:13px;align-items:flex-start;padding:16px;border-radius:12px;background:#fff3e9;border:1px solid #ffd7ba;color:#9c4c16;margin-bottom:20px}.tracking-alert>i{font-size:19px;margin-top:2px}.tracking-alert strong{font-size:14px}.tracking-alert p{font-size:12px;line-height:1.6;margin:5px 0 0;color:#8d5c3b}
 @media(max-width:575px){.tracking-progress-card{padding:19px;border-radius:14px}.tracking-progress-card h3{font-size:21px}.tracking-current-badge{font-size:9px;padding:4px 6px}.tracking-route-summary{gap:8px}.tracking-route-summary strong{font-size:12px}}
+
+
+/* Interactive customer shipment tracking map */
+.shipment-map-card{margin:28px 0 34px;padding:clamp(18px,3vw,30px);border:1px solid var(--ng-border);border-radius:var(--ng-radius);background:#fff;box-shadow:var(--ng-shadow)}
+.shipment-map-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;flex-wrap:wrap;margin-bottom:18px}
+.shipment-map-heading h3{margin:0 0 6px;font-weight:800}.shipment-map-heading p{margin:0;color:var(--ng-muted);font-size:14px}
+.shipment-map-kicker{color:var(--ng-blue)!important;font-size:11px!important;font-weight:800;letter-spacing:.14em;margin-bottom:5px!important}
+.shipment-map-controls{display:flex;gap:6px;padding:4px;border:1px solid var(--ng-border);border-radius:12px;background:#f4f8fc}
+.shipment-map-controls button{border:0;border-radius:8px;padding:8px 14px;background:transparent;color:#536477;font-weight:700;cursor:pointer}
+.shipment-map-controls button.is-active{background:var(--ng-navy);color:#fff}
+.shipment-tracking-map{width:100%;height:clamp(300px,48vw,470px);min-height:300px;border-radius:14px;overflow:hidden;background:#eaf0f5;z-index:0}
+.shipment-map-legend{display:flex;flex-wrap:wrap;gap:14px 22px;padding:16px 0 4px;color:#35465a;font-size:13px;font-weight:600}.shipment-map-legend span{display:inline-flex;align-items:center;gap:8px}
+.shipment-map-dot{width:10px;height:10px;border-radius:50%;display:inline-block}.shipment-origin-dot{background:#1769aa}.shipment-current-dot{background:#e59b21}.shipment-destination-dot{background:#15966a}
+.shipment-map-note{margin:8px 0 2px;color:var(--ng-blue);font-size:13px;font-weight:700}.shipment-map-disclaimer{margin:0;color:#718096;font-size:12px;line-height:1.6}
+.shipment-map-marker-wrap{background:transparent;border:0}.shipment-map-marker{display:flex;align-items:center;justify-content:center;width:32px;height:32px;border:3px solid #fff;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:var(--marker-color);color:#fff;font-size:12px;font-weight:800;box-shadow:0 3px 12px #10243b45}
+@media(max-width:575px){.shipment-map-card{padding:16px}.shipment-map-controls button{padding:7px 10px}.shipment-tracking-map{height:340px}}
