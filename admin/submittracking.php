@@ -20,7 +20,7 @@ foreach ($fields as $key=>$max) {
 $dateValid=static function(string $date): bool {
     return preg_match('/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/',$date)===1 && checkdate((int)substr($date,5,2),(int)substr($date,8,2),(int)substr($date,0,4));
 };
-if (!in_array($data[3],['Air Freight','Marine Freight','Land Freight'],true) || !in_array($data[17],['Shipped','Delivered','Transit','Packaging','Missing Parcel'],true)) {
+if (!in_array($data[3],['Air Freight','Marine Freight','Land Freight'],true) || !in_array($data[17],['Shipped','Delivered','Transit','Packaging','Missing Parcel','On Hold'],true)) {
     $_SESSION['ERRMSG_ARR']=['Choose a valid shipment type and parcel status.']; header('Location: '.$redirect); exit();
 }
 if (!$dateValid($data[5]) || !$dateValid($data[6]) || strcmp($data[6],$data[5])<0) {
@@ -32,12 +32,27 @@ if (!preg_match('/^[A-Za-z0-9_-]+$/',$data[2])) {
 try {
     $data[2] = 'NG' . date('ymd') . strtoupper(bin2hex(random_bytes(5)));
     $sql='INSERT INTO tracking (first_name,last_name,tracking_number,shipment_type,content,shipment_date,delivery_date,source_city,source_state,source_zip,current_city,current_state,current_zip,destination_city,destination_state,destination_zip,contact_number,parcel_status) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)';
-    app_db()->prepare($sql)->execute($data);
+    $db = app_db();
+    $db->beginTransaction();
+    $db->prepare($sql)->execute($data);
+    $shipmentId = (int)$db->lastInsertId();
+    $event = $db->prepare('INSERT INTO tracking_events (shipment_id, tracking_number, status, location, description, event_time, created_by) VALUES (:shipment_id, :tracking_number, :status, :location, :description, CURRENT_TIMESTAMP, :created_by)');
+    $event->execute([
+        ':shipment_id' => $shipmentId,
+        ':tracking_number' => $data[2],
+        ':status' => $data[17],
+        ':location' => trim($data[10] . ', ' . $data[11], ', '),
+        ':description' => 'Shipment created',
+        ':created_by' => (int)($_SESSION['userId'] ?? 0) ?: null,
+    ]);
+    $db->commit();
 } catch (PDOException $exception) {
+    if (isset($db) && $db instanceof PDO && $db->inTransaction()) $db->rollBack();
     error_log('Create shipment failed: '.$exception->getMessage());
     $_SESSION['ERRMSG_ARR']=['Unable to generate or save a unique tracking number right now. Please try again.'];
     header('Location: '.$redirect); exit();
 } catch (Throwable $exception) {
+    if (isset($db) && $db instanceof PDO && $db->inTransaction()) $db->rollBack();
     error_log('Create shipment failed: '.$exception->getMessage());
     $_SESSION['ERRMSG_ARR']=['Unable to save shipment right now. Please try again.']; header('Location: '.$redirect); exit();
 }
