@@ -36,7 +36,7 @@ The database defaults to `storage/nextgen.sqlite`; `storage/.htaccess` denies di
 ### Initialize the database
 1. Upload the files.
 2. Confirm PHP can write to `storage/`. The connection attempts to create this directory if missing.
-3. Open the site once. `database/connection.php` initializes missing tables and indexes using idempotent `CREATE TABLE IF NOT EXISTS` statements.
+3. Open `/health-check.php` once (or another page that actually accesses the database). The homepage alone does not need to connect to SQLite. `database/connection.php` initializes missing tables and indexes using idempotent `CREATE TABLE IF NOT EXISTS` statements.
 4. If it fails, check PHP error logs and verify `pdo_sqlite` is enabled and storage is writable. Public errors intentionally do not reveal paths or stack traces.
 
 The schema includes administrators, users, shipments, tracking events, contact messages, quote requests, and login throttling. Existing `admin` and `tracking` column names are retained. This does not automatically migrate records from a separate MySQL database; back up and migrate such records separately before going live.
