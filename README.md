@@ -1,78 +1,71 @@
-![visitors](https://visitor-badge.glitch.me/badge?page_id=happiguru/Shipping_And_Courier_Services)
+# NEXTGEN Logistics — Shipping and Courier Services
 
-## Shipping and Courrier Service Application
+NEXTGEN Logistics is a PHP website with a public marketing site, shipment lookup, and an administrator workspace for creating and managing shipments. It uses PHP PDO with SQLite and requires no paid database or Node.js build step for normal hosting.
 
-This project is an implementation of a courier and shipping website with features like package tracking, admin-backend, and user-frontend that was built fully with PHP, HTML, and CSS3.
+## Deploy to InfinityFree
 
-![screenshot](app_screenshot.png)
-## Built With
+### Requirements
+- An InfinityFree account and a domain/subdomain attached to it.
+- The newest PHP version offered by the hosting control panel.
+- PHP PDO and `pdo_sqlite` enabled.
+- A writable directory for the SQLite database.
 
-- HTML
-- CSS3
-- JavaScript/ES6
-- Webpack
-- PHP
+InfinityFree support discussions report PDO SQLite support, but verify the PHP version and extensions available on your own account. PHP code cannot enable an extension disabled by the host.
 
-## Live Demo
+### Upload structure
+Upload the existing website into the domain's `htdocs/` directory, preserving paths:
 
-[Live Demo Link](http://flight.learningo.club/index.php)
-![screenshot](tracking.png)
+```text
+htdocs/
+  index.php
+  admin/
+  assets/
+  controllers/
+  css/
+  database/
+  js/
+  views/
+  storage/
+    .htaccess
+  .htaccess
+  health-check.php
+```
 
-## Database and first administrator setup
+The database defaults to `storage/nextgen.sqlite`; `storage/.htaccess` denies direct web access. If your host permits a writable directory outside the document root, configure `SQLITE_PATH` to use that private absolute path. Do not commit a production SQLite file, setup key, or other secrets.
 
-### Initialize a new MySQL database
+### Initialize the database
+1. Upload the files.
+2. Confirm PHP can write to `storage/`. The connection attempts to create this directory if missing.
+3. Open the site once. `database/connection.php` initializes missing tables and indexes using idempotent `CREATE TABLE IF NOT EXISTS` statements.
+4. If it fails, check PHP error logs and verify `pdo_sqlite` is enabled and storage is writable. Public errors intentionally do not reveal paths or stack traces.
 
-1. Create an empty MySQL database on your host.
-2. Import `database/schema.sql` using your host's SQL console or database manager. It creates the `admin` and `tracking` tables and indexes expected by the PHP application.
-3. Set the database environment variables listed below on the PHP service.
+The schema includes administrators, users, shipments, tracking events, contact messages, quote requests, and login throttling. Existing `admin` and `tracking` column names are retained. This does not automatically migrate records from a separate MySQL database; back up and migrate such records separately before going live.
 
-For a database that already contains shipment or administrator records, take a backup and inspect its schema before importing. The script uses `CREATE TABLE IF NOT EXISTS`; it does not migrate or alter existing tables.
+### Create the first administrator
+1. Generate a unique secret with at least 32 characters. Never commit it to GitHub or put it in a public URL.
+2. Configure `ADMIN_SETUP_KEY` in the hosting environment if supported. If environment variables are unavailable, use a temporary private server-side configuration include that is not committed, then remove it immediately after setup.
+3. Open `/admin-setup.php`, enter the secret, and create a unique username and a strong password of at least 12 characters.
+4. Setup refuses to create an administrator if one already exists. After success, remove the setup key and disable/delete `admin-setup.php` if practical.
+5. Sign in at `/admin/index.php`.
 
+Do not leave a hard-coded setup secret in a public repository. If your account cannot provide a private configuration value, do not expose the setup route with a permanent key.
 
-Configure the PHP service with these environment variables:
+### Verify
+- Open homepage, services, about, contact, tracking, and quotation pages.
+- Sign in at `/admin/index.php`.
+- Create a test shipment and look it up by its generated tracking number.
+- Test status updates, including On Hold wherever the status form supports it.
+- Quote email delivery depends on host mail support and `QUOTE_RECIPIENT_EMAIL` / `QUOTE_FROM_EMAIL`.
+- Open `/health-check.php`: it returns only a generic healthy/unavailable status and never exposes database paths. It can initialize the database on first access.
+- Confirm `/storage/nextgen.sqlite` cannot be downloaded.
 
-- `DB_HOST`
-- `DB_USER`
-- `DB_PASSWORD`
-- `DB_DATABASE`
-- `DB_PORT` (optional; defaults to 3306)
+## Local development
+Install PHP with PDO SQLite enabled and run `php -S 127.0.0.1:8000` from the project root. The built-in PHP server is for development only.
 
-Railway MySQL variables (`MYSQLHOST`, `MYSQLUSER`, `MYSQLPASSWORD`, `MYSQLDATABASE`, `MYSQLPORT`) are also supported.
+## Database notes
+- Database access should use `database/connection.php` and `app_db()`.
+- Use prepared statements for SQL values.
+- SQLite is a single-file database; write concurrency is lower than a dedicated database server.
+- The PHP website does not require Node.js, MySQL, background workers, or paid services.
 
-To create the first administrator, set `ADMIN_SETUP_KEY` in the hosting environment to a unique random secret of at least 32 characters. Open `/admin-setup.php`, enter that key, choose a username and a password of at least 12 characters, and submit. The setup page creates the compatible `admin` table if needed and stores a password hash. It refuses setup if an administrator already exists. After successful setup, remove `ADMIN_SETUP_KEY` from the hosting environment and sign in at `/admin/index.php`. Never commit database credentials or the setup key.
-
-The setup flow needs a working MySQL database and PHP's MySQLi extension. It does not create shipment/tracking tables; import the project's existing database schema for tracking features.
-
-## Getting Started
-
-To get a local copy  and to set it up and running follow these simple example steps.
-
-### Prerequisites
-
-- Browser
-- Internet
-
-- Download the code from repository (https://github.com/happiguru/shipping_courier_services).
-
-## Authors
-
-👤 **Stanley Enow Lekunze**
-
-- Github: [@happiguru](https://github.com/happiguru)
-- Twitter: [@Lekunze_Nley](https://twitter.com/Lekunze_Nley)
-- Linkedin: [lekunze-nley](https://www.linkedin.com/in/lekunze-nley/)
-
-
-## Show your support
-
-Give a ⭐️ if you like this project!
-
-## Acknowledgments
--This project gave us a better understanding of the visual properties that must be used on a website.
-
-## 📝 License
-
-This project is [MIT](LICENSE) licensed.
-
-
-
+The existing frontend, visual assets, and application layout are retained. See `LICENSE` for license details.
