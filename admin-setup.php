@@ -18,6 +18,9 @@ function setup_escape(string $value): string
 }
 
 $setupSecret = getenv('ADMIN_SETUP_KEY');
+if (($setupSecret === false || trim((string)$setupSecret) === '') && defined('ADMIN_SETUP_KEY')) {
+    $setupSecret = (string) ADMIN_SETUP_KEY;
+}
 if ($setupSecret === false || strlen($setupSecret) < 32) {
     http_response_code(404);
     exit('Not found');
@@ -29,7 +32,7 @@ try {
     // Do not display PHP warnings before headers or disclose internal paths/configuration.
     error_log('Admin setup unavailable: ' . $exception->getMessage());
     http_response_code(503);
-    exit('Setup is temporarily unavailable. Check the Railway volume configuration.');
+    exit('Setup is temporarily unavailable. Check the hosting storage configuration.');
 }
 
 $adminExists = static function (PDO $db): bool {
