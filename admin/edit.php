@@ -123,6 +123,7 @@
                         <option value="Transit" <?php echo $status === 'Transit' ? 'selected' : ''; ?>>Transit</option>
                         <option value="Packaging" <?php echo $status === 'Packaging' ? 'selected' : ''; ?>>Packaging</option>
                         <option value="Missing Parcel" <?php echo $status === 'Missing Parcel' ? 'selected' : ''; ?>>Missing Parcel</option>
+                        <option value="On Hold" <?php echo $status === 'On Hold' ? 'selected' : ''; ?>>On Hold</option>
                       </select>
                     </div>
                   </div>
