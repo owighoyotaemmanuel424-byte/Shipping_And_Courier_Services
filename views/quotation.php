@@ -66,9 +66,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit']) &&
     } elseif ($values['ddate'] < $values['pdate']) {
         $quoteStatus = 'Expected delivery date cannot be earlier than pickup date.';
     } else {
+        // Persist the validated request first so it is not lost if shared-host mail is unavailable.
+        try {
+            require_once __DIR__ . '/../database/connection.php';
+            $quoteDb = app_db();
+            $quoteInsert = $quoteDb->prepare('INSERT INTO quote_requests (first_name,last_name,email,contact_number,pickup_address,delivery_address,pickup_date,pickup_time,expected_delivery_date,pickup_city,pickup_state,pickup_country,delivery_city,delivery_state,delivery_country,receiver_name,shipment_type,pickup_type,content) VALUES (:first_name,:last_name,:email,:contact_number,:pickup_address,:delivery_address,:pickup_date,:pickup_time,:expected_delivery_date,:pickup_city,:pickup_state,:pickup_country,:delivery_city,:delivery_state,:delivery_country,:receiver_name,:shipment_type,:pickup_type,:content)');
+            $quoteInsert->execute([
+                ':first_name'=>$values['firstname'], ':last_name'=>$values['lastname'], ':email'=>$values['email'],
+                ':contact_number'=>$values['contactnumber'], ':pickup_address'=>$values['paddress'], ':delivery_address'=>$values['daddress'],
+                ':pickup_date'=>$values['pdate'], ':pickup_time'=>$values['ptime'], ':expected_delivery_date'=>$values['ddate'],
+                ':pickup_city'=>$values['pcity'], ':pickup_state'=>$values['pstate'], ':pickup_country'=>$values['pcountry'],
+                ':delivery_city'=>$values['dcity'], ':delivery_state'=>$values['dstate'], ':delivery_country'=>$values['dcountry'],
+                ':receiver_name'=>$values['receivername'], ':shipment_type'=>$values['shipmentType'], ':pickup_type'=>$values['pickupType'], ':content'=>$values['content']
+            ]);
+        } catch (Throwable $exception) {
+            error_log('Quote request could not be stored: ' . get_class($exception));
+            $quoteStatus = 'We could not save your request right now. Please try again later.';
+        }
         $recipient = getenv('QUOTE_RECIPIENT_EMAIL') ?: '';
         $from = getenv('QUOTE_FROM_EMAIL') ?: '';
-        if (!filter_var($recipient, FILTER_VALIDATE_EMAIL) || !filter_var($from, FILTER_VALIDATE_EMAIL)) {
+        if ($quoteStatus !== '') {
+            // Keep the database error message and avoid reporting success.
+        } elseif (!filter_var($recipient, FILTER_VALIDATE_EMAIL) || !filter_var($from, FILTER_VALIDATE_EMAIL)) {
             $quoteStatus = 'Quote requests are temporarily unavailable. Please contact the site administrator.';
             error_log('Quote request email is not configured; set QUOTE_RECIPIENT_EMAIL and QUOTE_FROM_EMAIL.');
         } else {
