@@ -43,9 +43,9 @@ The schema includes administrators, users, shipments, tracking events, contact m
 
 ### Create the first administrator
 1. Generate a unique secret with at least 32 characters. Never commit it to GitHub or put it in a public URL.
-2. Configure `ADMIN_SETUP_KEY` in the hosting environment if supported. If environment variables are unavailable, use a temporary private server-side configuration include that is not committed, then remove it immediately after setup.
+2. If environment variables are supported, configure `ADMIN_SETUP_KEY` there. Otherwise copy `database/private-config.example.php` to `database/private-config.php` using the hosting file manager, edit the copy to set a unique random `ADMIN_SETUP_KEY` of at least 32 characters, and never upload/commit that private file to GitHub. The private file is excluded by `.gitignore`.
 3. Open `/admin-setup.php`, enter the secret, and create a unique username and a strong password of at least 12 characters.
-4. Setup refuses to create an administrator if one already exists. After success, remove the setup key and disable/delete `admin-setup.php` if practical.
+4. Setup refuses to create an administrator if one already exists. After success, remove the environment key or delete `database/private-config.php`, and disable/delete `admin-setup.php` if practical.
 5. Sign in at `/admin/index.php`.
 
 Do not leave a hard-coded setup secret in a public repository. If your account cannot provide a private configuration value, do not expose the setup route with a permanent key.
@@ -55,7 +55,7 @@ Do not leave a hard-coded setup secret in a public repository. If your account c
 - Sign in at `/admin/index.php`.
 - Create a test shipment and look it up by its generated tracking number.
 - Test status updates, including On Hold wherever the status form supports it.
-- Quote email delivery depends on host mail support and `QUOTE_RECIPIENT_EMAIL` / `QUOTE_FROM_EMAIL`.
+- Contact messages and quote requests are stored in SQLite. Quote email delivery also depends on host mail support and `QUOTE_RECIPIENT_EMAIL` / `QUOTE_FROM_EMAIL`.
 - Open `/health-check.php`: it returns only a generic healthy/unavailable status and never exposes database paths. It can initialize the database on first access.
 - Confirm `/storage/nextgen.sqlite` cannot be downloaded.
 
