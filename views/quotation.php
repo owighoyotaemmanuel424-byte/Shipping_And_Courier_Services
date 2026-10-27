@@ -88,7 +88,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit']) &&
         if ($quoteStatus !== '') {
             // Keep the database error message and avoid reporting success.
         } elseif (!filter_var($recipient, FILTER_VALIDATE_EMAIL) || !filter_var($from, FILTER_VALIDATE_EMAIL)) {
-            $quoteStatus = 'Quote requests are temporarily unavailable. Please contact the site administrator.';
+            $quoteStatus = 'Your request has been saved, but email notification is not configured. Our team can review it.';
             error_log('Quote request email is not configured; set QUOTE_RECIPIENT_EMAIL and QUOTE_FROM_EMAIL.');
         } else {
             $lines = [];
@@ -99,7 +99,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit']) &&
             if (mail($recipient, 'NEXTGEN shipping quote request', implode("\n", $lines), $headers)) {
                 $quoteStatus = 'Your quote request was sent successfully. Our team will review the details.';
             } else {
-                $quoteStatus = 'We could not send your request right now. Please try again later.';
+                $quoteStatus = 'Your request was saved, but email notification could not be sent. Our team can still review it.';
                 error_log('NEXTGEN quote request email could not be sent.');
             }
         }
