@@ -121,6 +121,7 @@
                         <option value="Transit">Transit</option>
                         <option value="Packaging">Packaging</option>
                         <option value="Missing Parcel">Missing Parcel</option>
+                        <option value="On Hold">On Hold</option>
                       </select>
                     </div>
                   </div>
