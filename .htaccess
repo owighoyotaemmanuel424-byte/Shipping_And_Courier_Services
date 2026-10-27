@@ -5,10 +5,6 @@ DirectoryIndex index.php index.html
     Require all denied
 </FilesMatch>
 
-# These directives are supported by common Apache hosts; if the host disallows
-# php_flag, remove only these two lines and disable display_errors in its panel.
-php_flag display_errors Off
-php_flag log_errors On
 
 <IfModule mod_headers.c>
     Header always set X-Content-Type-Options "nosniff"
