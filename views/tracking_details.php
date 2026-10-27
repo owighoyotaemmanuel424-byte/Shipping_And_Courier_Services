@@ -60,6 +60,14 @@ if (empty($_SESSION['USER_NUM'])) {
     $destination_address = $row['destination_city'] . ', ' . $row['destination_state'] . ', ' . $row['destination_zip'];
     $phone = $row['contact_number'];
     $status = $row['parcel_status'];
+    $trackingEvents = [];
+    try {
+        $eventStmt = app_db()->prepare('SELECT status, location, description, event_time FROM tracking_events WHERE tracking_number = :number ORDER BY event_time DESC, id DESC LIMIT 20');
+        $eventStmt->execute([':number' => $num]);
+        $trackingEvents = $eventStmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Throwable $exception) {
+        error_log('Tracking history lookup failed: ' . get_class($exception));
+    }
     function tracking_escape($value) {
         return htmlspecialchars((string)$value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
     }
@@ -138,7 +146,9 @@ if (empty($_SESSION['USER_NUM'])) {
           <h3 id="trackingProgressTitle">Delivery progress</h3>
           <p class="tracking-progress-number">Tracking ID: <strong><?php echo tracking_escape($num); ?></strong></p>
           <div class="tracking-status-summary"><span class="tracking-status-indicator <?php echo $status === 'Delivered' ? 'is-delivered' : ($status === 'Missing Parcel' ? 'is-attention' : 'is-moving'); ?>"></span><div><span class="tracking-status-label">CURRENT STATUS</span><strong><?php echo tracking_escape($status); ?></strong></div><span class="tracking-status-updated"><i class="fa-regular fa-calendar" aria-hidden="true"></i> Shipment date: <?php echo tracking_escape($shipdate); ?></span></div>
-          <?php if ($status === 'Missing Parcel'): ?>
+          <?php if ($status === 'On Hold'): ?>
+            <div class="tracking-alert" role="status"><i class="fa-solid fa-pause-circle" aria-hidden="true"></i><div><strong>Shipment temporarily on hold</strong><p>Your shipment is on hold. Please contact customer support if you need more information.</p></div></div>
+          <?php elseif ($status === 'Missing Parcel'): ?>
             <div class="tracking-alert" role="status"><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i><div><strong>Shipment requires attention</strong><p>Please contact customer support for the latest information about this parcel.</p></div></div>
           <?php else:
             $trackingStages = ['Packaging' => 'Shipment prepared', 'Shipped' => 'Shipment dispatched', 'Transit' => 'In transit', 'Delivered' => 'Delivered'];
@@ -160,6 +170,21 @@ if (empty($_SESSION['USER_NUM'])) {
                 </li>
               <?php endforeach; ?>
             </ol>
+          <?php endif; ?>
+          <?php if ($trackingEvents): ?>
+            <section class="tracking-history" aria-labelledby="trackingHistoryTitle" style="margin-top:24px;padding:20px;border:1px solid #e5ebf4;border-radius:14px;background:#fff">
+              <h3 id="trackingHistoryTitle" style="margin:0 0 14px;font-size:18px">Tracking history</h3>
+              <ol style="list-style:none;margin:0;padding:0">
+                <?php foreach ($trackingEvents as $event): ?>
+                  <li style="padding:12px 0;border-top:1px solid #edf1f6">
+                    <strong><?php echo tracking_escape($event['status']); ?></strong>
+                    <?php if ((string)$event['location'] !== ''): ?><span> · <?php echo tracking_escape($event['location']); ?></span><?php endif; ?>
+                    <?php if ((string)$event['description'] !== ''): ?><p style="margin:5px 0;color:#64748b"><?php echo tracking_escape($event['description']); ?></p><?php endif; ?>
+                    <time style="font-size:12px;color:#64748b"><?php echo tracking_escape($event['event_time']); ?></time>
+                  </li>
+                <?php endforeach; ?>
+              </ol>
+            </section>
           <?php endif; ?>
           <div class="tracking-route-summary">
             <div><span>ORIGIN</span><strong><?php echo tracking_escape($row['source_city']); ?></strong><small><?php echo tracking_escape(trim($row['source_state'] . ' ' . $row['source_zip'])); ?></small></div>
